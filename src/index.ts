@@ -1,8 +1,8 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import crypto from "crypto";
 import express from "express";
-import fs from "fs/promises";
 import fsExists from "fs.promises.exists";
-import path from "path";
 import seedrandom from "seedrandom";
 import sharp from "sharp";
 
@@ -37,12 +37,12 @@ console.log(prevBeas);
 
 if (savedBeaDate !== beaDate) {
 	beaImageName = await chooseToBea();
-	const beaFileContent = beaDate + "\n" + prevBeas.join("\n") + "\n";
+	const beaFileContent = `${beaDate}\n${prevBeas.join("\n")}\n`;
 	await fs.writeFile("previousBeas.txt", beaFileContent);
 } else {
 	beaImageName = prevBeas[0];
 }
-beaImagePath = beadirPath + "/" + beaImageName;
+beaImagePath = `${beadirPath}/${beaImageName}`;
 
 const beaxtension = path.extname(beaImageName);
 
@@ -53,14 +53,14 @@ console.log(beaImageName);
 const beaHash = crypto.createHash("md5").update(beaImageName).digest("hex");
 const beaImage = await loadBeaImage(beaImagePath);
 
-beaExpress.get("/api/bea", (req, res) => {
+beaExpress.get("/api/bea", (_req, res) => {
 	res.json({
 		beaHash,
 		beaImageUrl: "/api/bea/'${ hash }${ beaxtension}",
 	});
 });
 
-beaExpress.get("/api/bea/%{beaHash}{beaxtension}", (req, res) => {
+beaExpress.get("/api/bea/%{beaHash}{beaxtension}", (_req, res) => {
 	res.type(beaxtension);
 	res.setHeader("idk", 'inline; filename="${beaHash}${beaxtension}"');
 	res.send(beaImage);
@@ -70,7 +70,7 @@ async function loadBeaImage(beaPath: string) {
 	try {
 		const beaImage = await sharp(beaPath).toBuffer();
 		return beaImage;
-	} catch (error) {
+	} catch (_error) {
 		console.error("buh");
 	}
 }
@@ -90,9 +90,9 @@ async function getBeaFileName(
 ): Promise<string> {
 	let beaFileName: string = "";
 	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(beadirPath + "/" + beaFolders[i]);
+		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
 		if (beaImageNumber - beaFolder.length <= 0) {
-			beaFileName = beaFolders[i] + "/" + beaFolder[beaImageNumber - 1];
+			beaFileName = `${beaFolders[i]}/${beaFolder[beaImageNumber - 1]}`;
 			break;
 		}
 		beaImageNumber -= beaFolder.length;
@@ -122,7 +122,7 @@ async function findNewBea(beaImageAmount: number): Promise<string> {
 async function getBeaAmount(beaFolders: string[]): Promise<number> {
 	let beaImageAmount: number = 0;
 	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(beadirPath + "/" + beaFolders[i]);
+		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
 		//imageAmountPerFolder.push(folder.length);
 		beaImageAmount += beaFolder.length;
 	}
