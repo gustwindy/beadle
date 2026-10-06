@@ -6,13 +6,13 @@ import fsExists from "fs.promises.exists";
 import seedrandom from "seedrandom";
 import sharp from "sharp";
 
-const beadirPath = "./have fun spanier";
+const beadirPath = "./public/have fun spanier";
 const prevBeasFilePath = "./previousBeas.txt";
 const beaDate = new Date().toISOString().split("T")[0]; //timezone of user?!
-const beaGenerator = seedrandom(beaDate); ///uihergiuherg
+const beaGenerator = seedrandom(beaDate);
 const beaExpress = express();
 
-const prevBeas = [];
+const prevBeas: string[] = [];
 let savedBeaDate = "";
 const beaFolders = await fs.readdir(beadirPath);
 let beaImagePath: string = "";
@@ -24,13 +24,14 @@ if (await fsExists(prevBeasFilePath)) {
 	const beaFileContent = await fs.readFile(prevBeasFilePath, "utf-8");
 	const beaLines = beaFileContent.split("\n");
 	let hasDate: boolean = false;
-	for (const beaLine of beaLines)
+	for (const beaLine of beaLines) {
 		if (beaLine !== "") {
 			if (!hasDate) {
 				savedBeaDate = beaLine;
 				hasDate = true;
 			} else prevBeas.push(beaLine);
 		}
+	}
 }
 
 console.log(prevBeas);
@@ -40,7 +41,7 @@ if (savedBeaDate !== beaDate) {
 	const beaFileContent = `${beaDate}\n${prevBeas.join("\n")}\n`;
 	await fs.writeFile("previousBeas.txt", beaFileContent);
 } else {
-	beaImageName = prevBeas[0];
+	beaImageName = prevBeas[0] ?? "error";
 }
 beaImagePath = `${beadirPath}/${beaImageName}`;
 
@@ -50,20 +51,22 @@ console.log(savedBeaDate);
 console.log(beaDate);
 console.log(beaImagePath);
 console.log(beaImageName);
-const beaHash = crypto.createHash("md5").update(beaImageName).digest("hex");
-const beaImage = await loadBeaImage(beaImagePath);
-
+/*const beaImageHash = crypto
+	.createHash("md5")
+	.update(beaImageName)
+	.digest("hex");
+const artist: string = beaImageName.split("/")[0] ?? "error";
+//const artistHash = crypto.createHash("md5").update(artist).digest("hex");
+//const beaImage = await loadBeaImage(beaImagePath);
+*/
 beaExpress.get("/api/bea", (_req, res) => {
-	res.json({
-		beaHash,
-		beaImageUrl: "/api/bea/'${ hash }${ beaxtension}",
-	});
+	res.json({ beaImagePath });
 });
 
 beaExpress.get("/api/bea/%{beaHash}{beaxtension}", (_req, res) => {
-	res.type(beaxtension);
-	res.setHeader("idk", 'inline; filename="${beaHash}${beaxtension}"');
-	res.send(beaImage);
+	//res.type(beaxtension);
+	res.setHeader("idk", `inline; filename="${beaImagePath}${beaxtension}"`);
+	res.send(beaImagePath);
 });
 
 async function loadBeaImage(beaPath: string) {
