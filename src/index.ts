@@ -9,7 +9,7 @@ import sharp from "sharp";
 const beadirPath = "./have fun spanier";
 const prevBeasFilePath = "./previousBeas.txt";
 const beaDate = new Date().toISOString().split("T")[0]; //timezone of user?!
-const beaGenerator = seedrandom(beaDate);
+const beaGenerator = seedrandom(beaDate); ///uihergiuherg
 const beaExpress = express();
 
 const prevBeas = [];
