@@ -68,7 +68,7 @@ async function getTheBea(): Promise<string> {
   if (allNewBeaFiles.length > 0) {
     index = getRandomBeaint(0, allNewBeaFiles.length - 1);
     returnValue = allNewBeaFiles[index].replace("new_", "")
-    await fs.rename(beadirPath + "/" + allNewBeaFiles[index], beadirPath + "/" + returnValue);              //THIS RENAMES THE FILE SO IT WONT BE NEW ANYMORE
+    //await fs.rename(beadirPath + "/" + allNewBeaFiles[index], beadirPath + "/" + returnValue);              //THIS RENAMES THE FILE SO IT WONT BE NEW ANYMORE
 
   } else {
     let found: boolean = false;
