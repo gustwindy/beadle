@@ -13,7 +13,11 @@ import path from "path";
 
 const beadirPath = './have fun spanier';
 const prevBeasFilePath = "./previousBeas.txt";
-const beaDate = new Date().toISOString().split('T')[0] //timezone of user?!
+const beaDate = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit', }).format(new Date());
 const beaGenerator = seedrandom(beaDate);
 const beaExpress = express();
 
