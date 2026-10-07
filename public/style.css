@@ -2,6 +2,10 @@
     font-family: "Sniglet";
     src: url("/assets/fonts/Sniglet.ttf");
 }
+@font-face {
+    font-family: "Edu QLD Hand";
+    src: url("/assets/fonts/EduQLDHand.ttf");
+}
 
 body {
     background-color:#271842;
@@ -41,21 +45,116 @@ nav {
     display: flex;
     width: 100vw;
     flex: 1;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.welcome {
+.content > div {
+    display: none;
+}
+
+.content > div.active {
     display: flex;
     flex-direction: column;
     width: 100vw;
     flex: 1;
     align-items: center;
     justify-content: center;
+}
 
+.welcome {
     .logo {
         width: 70vw;
         height: 20vh;
         margin-bottom: 10vh;
+    }
+}
+
+.game {
+    .drawing {
+        margin: 30px;
+        display: flex;
+        max-height: 70vh;
+        flex: 3;
+
+        padding: 15px 20px 15px 20px;
+        background-color: #010813;
+        border: solid 2px #00050f;
+        border-radius: 15px;
+
+        img {
+            max-height: 100%;
+            border-radius: 15px;
+        }
+    }
+
+    .guess-box {
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-content: end;
+        width: 40vw;
+        min-width: 400px;
+        min-height: 100px;
+        max-height: 170px;
+        margin: auto;
+        margin-bottom: 0;
+        padding: 15px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: #010813;
+        border: solid 2px #00050f;
+        border-bottom: none;
+    }
+}
+
+.history {
+    overflow-y: scroll;
+    flex: 1;
+}
+
+.past-guess {
+    display: block;
+}
+
+.hint {
+    color: #FFC400;
+    font-family: "Edu QLD Hand", cursive;
+    margin-left: 15px;
+
+    .label {
+        font-family: "Sniglet", monospace;
+        color: #FFD509;
+    }
+}
+.guess {
+    color: #97E0FB;
+    font-family: "Edu QLD Hand", cursive;
+    .label {
+        color: #848AE3;
+    }
+}
+
+.guess-input {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+
+    input {
+        flex: 1;
+        background-color: #0a1623;
+        border: 1px solid #121f2b;
+        border-radius: 5px;
+        font-family: "Edu QLD Hand", cursive;
+        outline: none;
+        color:  #848AE3;
+    }
+    button {
+        background-color: #0a1623;
+        border: 1px solid #848AE3;
+        border-radius: 5px;
+        color:  #848AE3;
     }
 }

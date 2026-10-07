@@ -1,143 +1,48 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "crypto";
-import express from "express";
-import fsExists from "fs.promises.exists";
-import seedrandom from "seedrandom";
-import sharp from "sharp";
+import type { D1Database } from '@cloudflare/workers-types';
+import { IttyRouter, type RouterType } from 'itty-router';
+import { adminRoutes } from './routes/admin.ts';
+import * as sql from './lib/sql.ts';
+import { env } from "cloudflare:workers";
+import { routes } from './routes/bea.ts';
+import { getDrawingFor } from './lib/drawings.ts';
 
-const beadirPath = "./public/have fun spanier";
-const prevBeasFilePath = "./previousBeas.txt";
-const beaDate = new Date().toISOString().split("T")[0]; //timezone of user?!
-const beaGenerator = seedrandom(beaDate);
-const beaExpress = express();
+const _404 = () => new Response(null, { status: 404 });
 
-const prevBeas: string[] = [];
-let savedBeaDate = "";
-const beaFolders = await fs.readdir(beadirPath);
-let beaImagePath: string = "";
-let beaImageName: string = "";
-beaFolders.sort();
-beaExpress.use(express.static(path.join(import.meta.dirname, "../public")));
+export interface Env {
+	db: D1Database;
+    __router?: RouterType;
+}
+const ONE_DAY = 1000 * 60 * 60 * 23.9
 
-if (await fsExists(prevBeasFilePath)) {
-	const beaFileContent = await fs.readFile(prevBeasFilePath, "utf-8");
-	const beaLines = beaFileContent.split("\n");
-	let hasDate: boolean = false;
-	for (const beaLine of beaLines) {
-		if (beaLine !== "") {
-			if (!hasDate) {
-				savedBeaDate = beaLine;
-				hasDate = true;
-			} else prevBeas.push(beaLine);
-		}
+export default {
+    async fetch(request: Request, appEnv: Env, ctx: ExecutionContext): Promise<Response> {
+        if (!appEnv.__router) {
+            const router = IttyRouter();
+
+            adminRoutes(router);
+            routes(router);
+
+            router.all("*", () => {
+                return Response.json({
+                    status: 404
+                })
+            })
+            appEnv.__router = router;
+        };
+
+        return appEnv.__router.fetch(request);
+    },
+
+    async scheduled(controller: ScheduledController, appEnv: Env, ctx: ExecutionContext) {
+        const last: null | sql.DbHistory = await env.beadle.prepare(sql.lastHistory).first();
+        if (last == null || last.time + ONE_DAY < Math.ceil(Date.now())) {
+            const drawing = await getDrawingFor((last?.day ?? 0) + 1);
+
+            console.log(drawing);
+            if (drawing) {
+                env.beadle.prepare(sql.addHistory).bind(Math.ceil(Date.now()), drawing?.id)
+            }
+        }
+        console.log(last?.time);
 	}
 }
-
-console.log(prevBeas);
-
-if (savedBeaDate !== beaDate) {
-	beaImageName = await chooseToBea();
-	const beaFileContent = `${beaDate}\n${prevBeas.join("\n")}\n`;
-	await fs.writeFile("previousBeas.txt", beaFileContent);
-} else {
-	beaImageName = prevBeas[0] ?? "error";
-}
-beaImagePath = `${beadirPath}/${beaImageName}`;
-
-const beaxtension = path.extname(beaImageName);
-
-console.log(savedBeaDate);
-console.log(beaDate);
-console.log(beaImagePath);
-console.log(beaImageName);
-/*const beaImageHash = crypto
-	.createHash("md5")
-	.update(beaImageName)
-	.digest("hex");
-const artist: string = beaImageName.split("/")[0] ?? "error";
-//const artistHash = crypto.createHash("md5").update(artist).digest("hex");
-//const beaImage = await loadBeaImage(beaImagePath);
-*/
-beaExpress.get("/api/bea", (_req, res) => {
-	res.json({ beaImagePath });
-});
-
-beaExpress.get("/api/bea/%{beaHash}{beaxtension}", (_req, res) => {
-	//res.type(beaxtension);
-	res.setHeader("idk", `inline; filename="${beaImagePath}${beaxtension}"`);
-	res.send(beaImagePath);
-});
-
-async function loadBeaImage(beaPath: string) {
-	try {
-		const beaImage = await sharp(beaPath).toBuffer();
-		return beaImage;
-	} catch (_error) {
-		console.error("buh");
-	}
-}
-
-async function chooseToBea(): Promise<string> {
-	const beaImageAmount: number = await getBeaAmount(beaFolders);
-	const beaName = await findNewBea(beaImageAmount);
-	console.log(beaName);
-	prevBeas.unshift(beaName);
-	if (prevBeas.length > 10) prevBeas.pop();
-	return beaName;
-}
-
-async function getBeaFileName(
-	beaFolders: string[],
-	beaImageNumber: number,
-): Promise<string> {
-	let beaFileName: string = "";
-	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
-		if (beaImageNumber - beaFolder.length <= 0) {
-			beaFileName = `${beaFolders[i]}/${beaFolder[beaImageNumber - 1]}`;
-			break;
-		}
-		beaImageNumber -= beaFolder.length;
-	}
-
-	return beaFileName;
-}
-
-async function findNewBea(beaImageAmount: number): Promise<string> {
-	let beaFound: boolean = false;
-	let beaImageNumber: number = getRandomBeaint(1, beaImageAmount);
-	let beaFileName = await getBeaFileName(beaFolders, beaImageNumber);
-	while (!beaFound) {
-		beaFound = true;
-		for (let i = 0; i < prevBeas.length; i++) {
-			beaFileName = await getBeaFileName(beaFolders, beaImageNumber);
-			if (beaFileName === prevBeas[i]) {
-				beaFound = false;
-				beaImageNumber = getRandomBeaint(1, beaImageAmount);
-				break;
-			}
-		}
-	}
-	return beaFileName;
-}
-
-async function getBeaAmount(beaFolders: string[]): Promise<number> {
-	let beaImageAmount: number = 0;
-	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
-		//imageAmountPerFolder.push(folder.length);
-		beaImageAmount += beaFolder.length;
-	}
-	return beaImageAmount;
-}
-
-function getRandomBeaint(min: number, max: number) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(beaGenerator() * (max - min + 1)) + min;
-}
-
-beaExpress.listen(3000, () => {
-	console.log("http://localhost:3000");
-});

@@ -4,9 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "tsx src/index.ts",
-		"build": "tsc",
-		"start": "node dist/index.js",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"check": "biome check --write ."
@@ -17,11 +16,13 @@
 		"crypto": "^1.0.1",
 		"express": "^5.2.1",
 		"fs.promises.exists": "^1.1.4",
+		"itty-router": "^5.0.24",
 		"seedrandom": "^3.0.5",
 		"sharp": "^0.35.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.15",
+		"@cloudflare/workers-types": "^5.20261007.1",
 		"@types/express": "^5.0.6",
 		"@types/node": "^26.6.4",
 		"@types/seedrandom": "^3.0.8",

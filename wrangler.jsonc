@@ -1,0 +1,20 @@
+{
+	"name": "beadle",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-10-07",
+	"observability": {
+		"enabled": true,
+	},
+	"d1_databases": [
+		{
+			"binding": "beadle",
+			"database_name": "beadle",
+			"database_id": "b2740dd4-c34f-4957-85a0-553532313651"
+		}
+	],
+	"triggers": {
+		"crons": [
+			"0 * * * *"
+		]
+	}
+}

@@ -1,3 +1,6 @@
 node_modules
 have fun spanier
 previousBeas.txt
+.wrangler
+*.d.ts
+.env
