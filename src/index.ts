@@ -1,24 +1,30 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "crypto";
-import express from "express";
-import fsExists from "fs.promises.exists";
-import seedrandom from "seedrandom";
-import sharp from "sharp";
+//edge case? what if the generator pulls image with id on the 10th spot
+// it gets pushed out but the program crashes, now it reloads and the seed puts in the new first timezone
+// actually maybe nvm because date didnt change
 
-const beadirPath = "./public/have fun spanier";
+
+import fs from 'fs/promises';
+import fsExists from 'fs.promises.exists';
+import seedrandom from 'seedrandom';
+import crypto from 'crypto';
+import sharp from 'sharp';
+import express from 'express';
+import path from "path";
+
+const beadirPath = './have fun spanier';
 const prevBeasFilePath = "./previousBeas.txt";
-const beaDate = new Date().toISOString().split("T")[0]; //timezone of user?!
+const beaDate = new Date().toISOString().split('T')[0] //timezone of user?!
 const beaGenerator = seedrandom(beaDate);
 const beaExpress = express();
 
-const prevBeas: string[] = [];
+let prevBeas:string[] = [];
+let allOldBeaFiles: string[] = [];
+let allNewBeaFiles: string[] = [];
 let savedBeaDate = "";
-const beaFolders = await fs.readdir(beadirPath);
+let beaFolders = await fs.readdir(beadirPath);
 let beaImagePath: string = "";
 let beaImageName: string = "";
 beaFolders.sort();
-beaExpress.use(express.static(path.join(import.meta.dirname, "../public")));
 
 if (await fsExists(prevBeasFilePath)) {
 	const beaFileContent = await fs.readFile(prevBeasFilePath, "utf-8");
@@ -34,31 +40,17 @@ if (await fsExists(prevBeasFilePath)) {
 	}
 }
 
-console.log(prevBeas);
-
 if (savedBeaDate !== beaDate) {
-	beaImageName = await chooseToBea();
+  beaImageName = await getTheBea();
+  console.log(beaImageName);
 	const beaFileContent = `${beaDate}\n${prevBeas.join("\n")}\n`;
 	await fs.writeFile("previousBeas.txt", beaFileContent);
-} else {
-	beaImageName = prevBeas[0] ?? "error";
 }
+else beaImageName = prevBeas[0] + "";
 beaImagePath = `${beadirPath}/${beaImageName}`;
 
 const beaxtension = path.extname(beaImageName);
 
-console.log(savedBeaDate);
-console.log(beaDate);
-console.log(beaImagePath);
-console.log(beaImageName);
-/*const beaImageHash = crypto
-	.createHash("md5")
-	.update(beaImageName)
-	.digest("hex");
-const artist: string = beaImageName.split("/")[0] ?? "error";
-//const artistHash = crypto.createHash("md5").update(artist).digest("hex");
-//const beaImage = await loadBeaImage(beaImagePath);
-*/
 beaExpress.get("/api/bea", (_req, res) => {
 	res.json({ beaImagePath });
 });
@@ -69,67 +61,42 @@ beaExpress.get("/api/bea/%{beaHash}{beaxtension}", (_req, res) => {
 	res.send(beaImagePath);
 });
 
-async function loadBeaImage(beaPath: string) {
-	try {
-		const beaImage = await sharp(beaPath).toBuffer();
-		return beaImage;
-	} catch (_error) {
-		console.error("buh");
-	}
+async function getTheBea(): Promise<string> {
+  await loadBeasInArray();
+  let index: number = 0;
+  let returnValue: string = "";
+  if (allNewBeaFiles.length > 0) {
+    index = getRandomBeaint(0, allNewBeaFiles.length - 1);
+    returnValue = allNewBeaFiles[index].replace("new_", "")
+    await fs.rename(beadirPath + "/" + allNewBeaFiles[index], beadirPath + "/" + returnValue);              //THIS RENAMES THE FILE SO IT WONT BE NEW ANYMORE
+
+  } else {
+    let found: boolean = false;
+    while (!found) {
+      found = true;
+      index = getRandomBeaint(0, allOldBeaFiles.length - 1);
+      for (let i = 0; i < prevBeas.length; i++)
+        if (allOldBeaFiles[index] == prevBeas[i]) {
+          found = false;
+          break;
+        }
+    }
+    returnValue = allOldBeaFiles[index] + "";
+  }
+  return returnValue;
 }
 
-async function chooseToBea(): Promise<string> {
-	const beaImageAmount: number = await getBeaAmount(beaFolders);
-	const beaName = await findNewBea(beaImageAmount);
-	console.log(beaName);
-	prevBeas.unshift(beaName);
-	if (prevBeas.length > 10) prevBeas.pop();
-	return beaName;
-}
-
-async function getBeaFileName(
-	beaFolders: string[],
-	beaImageNumber: number,
-): Promise<string> {
-	let beaFileName: string = "";
-	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
-		if (beaImageNumber - beaFolder.length <= 0) {
-			beaFileName = `${beaFolders[i]}/${beaFolder[beaImageNumber - 1]}`;
-			break;
-		}
-		beaImageNumber -= beaFolder.length;
-	}
-
-	return beaFileName;
-}
-
-async function findNewBea(beaImageAmount: number): Promise<string> {
-	let beaFound: boolean = false;
-	let beaImageNumber: number = getRandomBeaint(1, beaImageAmount);
-	let beaFileName = await getBeaFileName(beaFolders, beaImageNumber);
-	while (!beaFound) {
-		beaFound = true;
-		for (let i = 0; i < prevBeas.length; i++) {
-			beaFileName = await getBeaFileName(beaFolders, beaImageNumber);
-			if (beaFileName === prevBeas[i]) {
-				beaFound = false;
-				beaImageNumber = getRandomBeaint(1, beaImageAmount);
-				break;
-			}
-		}
-	}
-	return beaFileName;
-}
-
-async function getBeaAmount(beaFolders: string[]): Promise<number> {
-	let beaImageAmount: number = 0;
-	for (let i = 0; i < beaFolders.length; i++) {
-		const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
-		//imageAmountPerFolder.push(folder.length);
-		beaImageAmount += beaFolder.length;
-	}
-	return beaImageAmount;
+async function loadBeasInArray() {
+  for (let i = 0; i < beaFolders.length; i++){
+    const beaFolder = await fs.readdir(`${beadirPath}/${beaFolders[i]}`);
+    for (let j = 0; j < beaFolder.length; j++){
+      if (beaFolder[j].includes("new_"))
+        allNewBeaFiles.push(beaFolders[i] + "/" +beaFolder[j]);
+      allOldBeaFiles.push(beaFolders[i] + "/" +beaFolder[j]);
+    }
+  }
+  console.log(allNewBeaFiles);
+  console.log(allOldBeaFiles);
 }
 
 function getRandomBeaint(min: number, max: number) {
