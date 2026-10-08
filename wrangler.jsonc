@@ -3,7 +3,7 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-10-07",
 	"observability": {
-		"enabled": true,
+		"enabled": true
 	},
 	"d1_databases": [
 		{
@@ -13,8 +13,6 @@
 		}
 	],
 	"triggers": {
-		"crons": [
-			"0 * * * *"
-		]
+		"crons": ["0 * * * *"]
 	}
 }
