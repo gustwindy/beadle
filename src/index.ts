@@ -15,7 +15,7 @@ export interface Env {
 const ONE_DAY = 1000 * 60 * 60 * 23.9
 
 export default {
-    async fetch(request: Request, appEnv: Env, ctx: ExecutionContext): Promise<Response> {
+    async fetch(request: Request, appEnv: Env, _ctx: ExecutionContext): Promise<Response> {
         if (!appEnv.__router) {
             const router = IttyRouter();
 
@@ -24,8 +24,9 @@ export default {
 
             router.all("*", () => {
                 return Response.json({
-                    status: 404
-                })
+                    "status": 404,
+                    "message": "not found"
+                },{status: 404})
             })
             appEnv.__router = router;
         };
@@ -33,14 +34,15 @@ export default {
         return appEnv.__router.fetch(request);
     },
 
-    async scheduled(controller: ScheduledController, appEnv: Env, ctx: ExecutionContext) {
-        const last: null | sql.DbHistory = await env.beadle.prepare(sql.lastHistory).first();
+    async scheduled(_controller: ScheduledController, _appEnv: Env, _ctx: ExecutionContext) {
+        const last: null | sql.DbHistory = await sql.lastHistory(env.beadle).first();
         if (last == null || last.time + ONE_DAY < Math.ceil(Date.now())) {
-            const drawing = await getDrawingFor((last?.day ?? 0) + 1);
+            const nextDay = (last?.day ?? 0) + 1;
+            const drawing = await getDrawingFor(nextDay);
 
-            console.log(drawing);
+            console.log(drawing?.id);
             if (drawing) {
-                env.beadle.prepare(sql.addHistory).bind(Math.ceil(Date.now()), drawing?.id)
+                await sql.addHistory(env.beadle, nextDay, Math.ceil(Date.now()), drawing?.id).run()
             }
         }
         console.log(last?.time);

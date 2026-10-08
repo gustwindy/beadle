@@ -3,17 +3,18 @@ import { env } from "cloudflare:workers";
 
 export async function getDrawingFor(day: number): Promise<sql.DbDrawing | null> {
     const bucket = await getPossibilitiesFor(day);
-    console.log(bucket)
+    console.log(bucket.length)
     if (bucket.length === 0) {
         return null;
     }
 
-    return await env.beadle.prepare(sql.getDrawing).bind(bucket[Math.floor(Math.random()*bucket.length)]).first();
+    const choice = bucket[Math.floor(Math.random() * bucket.length)]
+    return await sql.getDrawing(env.beadle,choice ?? 0).first();
 }
 
 async function getPossibilitiesFor(day: number) {
-    const dbBlacklist: D1Result<sql.DbHistory> = await env.beadle.prepare(sql.recentHistory).bind(day - 10).run();
-    const dbDrawings: D1Result<sql.DbDrawing> = await env.beadle.prepare(sql.listDrawings).run();
+    const dbBlacklist: D1Result<sql.DbHistory> = await sql.recentHistory(env.beadle,day - 10).run();
+    const dbDrawings: D1Result<sql.DbDrawing> = await sql.listDrawings(env.beadle).run();
 
     const drawings: number[] = dbDrawings.results.map((drawing) => {
         return drawing.id
@@ -23,5 +24,7 @@ async function getPossibilitiesFor(day: number) {
         return history.drawingId
     })
 
-    return drawings.filter((d) => blacklist.find((b) => d === b) !== undefined)
+    console.log(drawings.length,blacklist.length)
+
+    return drawings.filter((d) => blacklist.find((b) => d === b) === undefined)
 }
