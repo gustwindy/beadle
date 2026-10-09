@@ -4,26 +4,23 @@ import * as sql from "../lib/sql.ts";
 import { serverFault, yourFault } from "../lib/errors.ts";
 
 export function routes(app: RouterType) {
-	/*app.get("/api/bea", (_req, res) => {
-    	res.json({ beaImagePath });
-    });
-
-    app.get("/api/bea/%{beaHash}{beaxtension}", (_req, res) => {
-    	//res.type(beaxtension);
-    	res.setHeader("idk", `inline; filename="${beaImagePath}${beaxtension}"`);
-    	res.send(beaImagePath);
-    });*/
 	app.get("/api/today/", async (_request) => {
 		const last: null | sql.DbHistory = await sql
 			.lastHistory(env.beadle)
 			.first();
+		if (!last) return serverFault("no beadle ?!");
+
+		const drawing: null | sql.DbDrawing = await sql
+			.getDrawing(env.beadle, last?.drawingId)
+			.first();
+		if (!drawing) return serverFault("no drawing ?!");
 
 		return Response.json({
 			status: "200",
 			current: {
 				day: last?.day,
 				time: last?.time,
-				drawing: `/api/today/image`,
+				drawing: `/api/today/image/${drawing.hash}`,
 			},
 		});
 	});
@@ -55,7 +52,7 @@ export function routes(app: RouterType) {
 		});
 	});
 
-	app.get("/api/today/image", async (_request) => {
+	app.get("/api/today/image/:hash", async ({ params }) => {
 		const last: null | sql.DbHistory = await sql
 			.lastHistory(env.beadle)
 			.first();
@@ -71,6 +68,9 @@ export function routes(app: RouterType) {
 			.first();
 		if (!image) return serverFault("no image ?!");
 
+		if (params.hash !== image.hash) {
+			return yourFault("no!!");
+		}
 		return new Response(
 			Uint8Array.from(atob(image.image), (c) => c.charCodeAt(0)),
 			{

@@ -1,5 +1,6 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { createHash } from "crypto";
+import { uploadImage } from "./s3.ts";
 
 export function addArtist(
 	db: D1Database,
@@ -8,7 +9,10 @@ export function addArtist(
 ) {
 	return db
 		.prepare("INSERT INTO artists (commonName,aliases) VALUES (?,?)")
-		.bind(commonName, JSON.stringify(aliases));
+		.bind(
+			commonName.toLowerCase(),
+			JSON.stringify(aliases.map((a) => a.toLowerCase())),
+		);
 }
 
 export function addDrawing(db: D1Database, artistId: number, hash: string) {
@@ -20,11 +24,11 @@ export function addDrawing(db: D1Database, artistId: number, hash: string) {
 export function addDrawingImage(
 	db: D1Database,
 	hash: string,
-	encodedImage: string,
+	imageKey: string,
 ) {
 	return db
-		.prepare("INSERT INTO images (hash,image) VALUES (?,?)")
-		.bind(hash, encodedImage);
+		.prepare("INSERT INTO images (hash,imageKey) VALUES (?,?)")
+		.bind(hash, imageKey);
 }
 
 export async function lazyAddDrawing(
@@ -33,12 +37,12 @@ export async function lazyAddDrawing(
 	image: string,
 ) {
 	const hash: string = createHash("md5").update(image).digest("hex");
+	const imageKey = await uploadImage(image);
 
 	const artist: null | DbArtist = await getArtist(db, artistId).first();
 	if (!artist) return -1;
 
-	//await addDrawingImage(db, hash, image).run()
-	console.log(artist, hash);
+	await addDrawingImage(db, hash, imageKey).run();
 	const res = await addDrawing(db, artist.id, hash).run();
 
 	return res.meta.last_row_id;
@@ -109,7 +113,7 @@ export type DbArtist = {
 
 export type DbDrawingImage = {
 	hash: string;
-	image: string;
+	imageKey: string;
 };
 
 export type DbDrawing = {

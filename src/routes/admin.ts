@@ -2,6 +2,7 @@ import type { RouterType, IRequest } from "itty-router";
 import { env } from "cloudflare:workers";
 import * as sql from "../lib/sql.ts";
 import { notFound, serverFault, yourFault } from "../lib/errors.ts";
+import { getImage } from "../lib/s3.ts";
 
 const withRequireAdmin = async (request: IRequest) => {
 	try {
@@ -30,6 +31,7 @@ export function adminRoutes(app: RouterType) {
 				);
 
 			try {
+				console.log(content.artistId);
 				const currentId = await sql.lazyAddDrawing(
 					env.beadle,
 					content.artistId,
@@ -80,6 +82,7 @@ export function adminRoutes(app: RouterType) {
 					return {
 						id: drawing.id,
 						artist: drawing.artistId,
+						hash: drawing.hash,
 					};
 				}),
 			});
@@ -102,8 +105,14 @@ export function adminRoutes(app: RouterType) {
 			if (image == null)
 				return serverFault("drawing WAS found but the image wasn't");
 
+			const b64 = await getImage(image.imageKey);
+			if (b64 == null)
+				return serverFault(
+					"drawing WAS found, image WAS found, but it was not in the cdn server???",
+				);
+
 			return new Response(
-				Uint8Array.from(atob(image.image), (c) => c.charCodeAt(0)),
+				Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)),
 				{
 					headers: {
 						"Content-Type": "image/png",
