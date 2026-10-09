@@ -1,5 +1,6 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { createHash } from "crypto";
+
 import { uploadImage } from "./s3.ts";
 
 export function addArtist(

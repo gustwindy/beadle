@@ -1,7 +1,8 @@
 import type { RouterType } from "itty-router";
+import { serverFault, yourFault } from "../lib/errors.ts";
 import { env } from "cloudflare:workers";
 import * as sql from "../lib/sql.ts";
-import { serverFault, yourFault } from "../lib/errors.ts";
+import { getImage } from "../lib/s3.ts";
 
 export function routes(app: RouterType) {
 	app.get("/api/today/", async (_request) => {
@@ -52,14 +53,16 @@ export function routes(app: RouterType) {
 		});
 	});
 
-	app.get("/api/today/image/:hash", async ({ params }) => {
+	app.get("/api/today/image/:hash", async (request) => {
+		const { params } = request;
+
 		const last: null | sql.DbHistory = await sql
 			.lastHistory(env.beadle)
 			.first();
 		if (!last) return serverFault("no beadle ?!");
 
 		const drawing: null | sql.DbDrawing = await sql
-			.getDrawing(env.beadle, last?.drawingId)
+			.getDrawing(env.beadle, last.drawingId)
 			.first();
 		if (!drawing) return serverFault("no drawing ?!");
 
@@ -71,14 +74,29 @@ export function routes(app: RouterType) {
 		if (params.hash !== image.hash) {
 			return yourFault("no!!");
 		}
-		return new Response(
-			Uint8Array.from(atob(image.image), (c) => c.charCodeAt(0)),
+
+		const cacheKey = new URL(`/api/today/image/${image.hash}`, request.url);
+		const cached = await caches.default.match(cacheKey); // my ide keeps complaining about this
+		if (cached) return cached;
+
+		const b64 = await getImage(image.imageKey);
+		if (b64 == null) {
+			return serverFault("image missing from S3");
+		}
+
+		const response = new Response(
+			Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)),
 			{
 				headers: {
 					"Content-Type": "image/png",
+					"Cache-Control": "public, max-age=300",
 				},
 			},
 		);
+
+		await caches.default.put(cacheKey, response.clone());
+
+		return response;
 	});
 
 	app.get("/api/artistList/", async (_request) => {
