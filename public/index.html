@@ -1,61 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="style.css" />
         <title>Beadle</title>
     </head>
-<body class="loading">
-    <nav>
-        <a href="/" class="logo">beadle logo</a> v0.1.0
-        <div>
+    <body class="loading">
+        <nav>
+            <a href="/" class="logo">beadle logo</a> v0.1.0
+            <div></div>
+        </nav>
+        <div class="content">
+            <div class="welcome active">
+                <span style="opacity: 0.5">
+                    made by windy & spanier for vallycord !!
+                </span>
+                <span class="logo"></span>
+                <div class="wait-for-load bottom">
+                    <h1>Today's beadle: #<span id="beadleDay"></span></h1>
+                    <button type="button" id="start">Start</button>
+                </div>
+                <span style="opacity: 0.5">
+                    beadle is in a very early stage. expect bugs
+                </span>
+            </div>
+            <div class="game">
+                <div class="drawing-container">
+                    <div class="drawing">
+                        <img id="drawing" alt="loading..." />
+                    </div>
+                </div>
+                <div class="guess-box">
+                    <div class="history" id="history"></div>
+                    <div class="guess-input">
+                        <input id="input" maxlength="27" />
+                        <button type="button" id="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div id="template">
+            <span class="past-guess">
+                <span class="guess">
+                    <span class="label">&gt;</span>
+                    <span class="value">previous</span>
+                </span>
+                <span class="hint">
+                    <span class="label">hint:</span>
+                    <span class="value">something something something</span>
+                </span>
+            </span>
+            <span class="comment-container">
+                <span class="comment">hint</span>
+            </span>
         </div>
-    </nav>
-    <div class="content">
-        <div class="welcome active">
-            <span style="opacity: 0.5">made by windy & spanier for vallycord !!</span>
-            <span class="logo"></span>
-            <div class="wait-for-load">
-                <h1>Today's beadle: #<span id="beadleDay"></span></h1>
-                <button type="button">Start</button>
-            </div>
-        </div>
-        <div class="game">
-            <div class="drawing">
-                <img src="/have fun spanier/sam/sam4.png" alt="drawing">
-            </div>
-            <div class="guess-box">
-                <div class="history">
-                    <span class="past-guess">
-                        <span class="guess"><span class="label">&gt;</span> previous</span>
-                        <span class="hint"><span class="label">hint:</span> something something something</span>
-                    </span>
-                    <span class="past-guess">
-                        <span class="guess"><span class="label">&gt;</span> previous</span>
-                        <span class="hint"><span class="label">hint:</span> something something something</span>
-                    </span>
-                    <span class="past-guess">
-                        <span class="guess"><span class="label">&gt;</span> previous</span>
-                        <span class="hint"><span class="label">hint:</span> something something something</span>
-                    </span>
-                    <span class="past-guess">
-                        <span class="guess"><span class="label">&gt;</span> previous</span>
-                        <span class="hint"><span class="label">hint:</span> something something something</span>
-                    </span>
-                    <span class="past-guess">
-                        <span class="guess"><span class="label">&gt;</span> previous</span>
-                        <span class="hint"><span class="label">hint:</span> something something something</span>
-                    </span>
-                </div>
-                <div class="guess-input">
-                    <input>
-                    <button type="button">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="/scripts/index.js" type="module"></script>
-</body>
+        <script src="/scripts/index.js" type="module"></script>
+    </body>
 </html>

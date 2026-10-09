@@ -1,6 +1,7 @@
 import type { RouterType } from "itty-router";
 
 import { serverFault, yourFault } from "../lib/errors.ts";
+import { genHint } from "../lib/hints.ts";
 import { getImage } from "../lib/s3.ts";
 import * as sql from "../lib/sql.ts";
 import { env } from "cloudflare:workers";
@@ -27,7 +28,7 @@ export function routes(app: RouterType) {
 		});
 	});
 
-	app.post("/api/today/guess", async (request) => {
+	app.get("/api/today/guess/:guess", async ({ params }) => {
 		const last: null | sql.DbHistory = await sql
 			.lastHistory(env.beadle)
 			.first();
@@ -43,14 +44,15 @@ export function routes(app: RouterType) {
 			.first();
 		if (!artist) return serverFault("no artist ?!");
 
-		// biome-ignore lint/suspicious/noExplicitAny: dont know
-		const req: Record<string, any> = await request.json();
-
-		if (!req.guess) return yourFault("no guess ?!");
+		if (!params.guess) return yourFault("no guess ?!");
+		const correct = params.guess === artist.commonName;
 
 		return Response.json({
 			status: "200",
-			correct: req.guess === artist.commonName,
+			correct,
+			hint: correct
+				? "correct"
+				: await genHint(artist.commonName, params.guess),
 		});
 	});
 

@@ -72,21 +72,13 @@ nav {
 }
 
 .game {
-    .drawing {
+    .drawing-container {
+        justify-content: center;
+        align-content: center;
         margin: 30px;
         display: flex;
         max-height: 70vh;
         flex: 3;
-
-        padding: 15px 20px 15px 20px;
-        background-color: #010813;
-        border: solid 2px #00050f;
-        border-radius: 15px;
-
-        img {
-            max-height: 100%;
-            border-radius: 15px;
-        }
     }
 
     .guess-box {
@@ -111,11 +103,16 @@ nav {
 }
 
 .history {
-    overflow-y: scroll;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
     flex: 1;
 }
 
-.past-guess {
+.past-guess,
+.comment-container {
     display: block;
 }
 
@@ -147,16 +144,17 @@ nav {
         background-color: #0a1623;
         border: 1px solid #121f2b;
         border-radius: 5px;
-        font-family: "Edu QLD Hand", cursive;
+        font-family: "Sniglet", cursive;
         outline: none;
         color: #848ae3;
     }
-    button {
-        background-color: #0a1623;
-        border: 1px solid #848ae3;
-        border-radius: 5px;
-        color: #848ae3;
-    }
+}
+
+button {
+    background-color: #0a1623;
+    border: 1px solid #848ae3;
+    border-radius: 5px;
+    color: #848ae3;
 }
 
 .loading .wait-for-load {
@@ -182,4 +180,48 @@ nav {
     transform: translate(-50%, -50%);
 
     color: white;
+}
+
+.bottom {
+    background-color: #010813;
+    border: solid 2px #00050f;
+    padding: 15px;
+    color: #848ae3;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+
+    button {
+        font-size: 25px;
+        padding: 5px;
+        width: 100%;
+    }
+}
+
+img {
+    object-fit: contain;
+    max-height: 100%;
+    max-width: 90vw;
+    border-radius: 15px;
+}
+
+.drawing {
+    max-height: 80vh;
+    display: flex;
+    padding: 15px 20px 15px 20px;
+    background-color: #010813;
+    border: solid 2px #00050f;
+    border-radius: 15px;
+}
+
+#template {
+    display: none;
+}
+
+.waiting {
+    opacity: 0.5;
+}
+
+.comment {
+    color: #6e6a79;
 }
