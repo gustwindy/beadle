@@ -1,8 +1,9 @@
 import type { RouterType } from "itty-router";
+
 import { serverFault, yourFault } from "../lib/errors.ts";
-import { env } from "cloudflare:workers";
-import * as sql from "../lib/sql.ts";
 import { getImage } from "../lib/s3.ts";
+import * as sql from "../lib/sql.ts";
+import { env } from "cloudflare:workers";
 
 export function routes(app: RouterType) {
 	app.get("/api/today/", async (_request) => {

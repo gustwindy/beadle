@@ -1,9 +1,12 @@
 import * as api from "./api.js";
 
+const beadleDay = document.getElementById("beadleDay");
+
 async function start() {
-	console.log(await api.today());
+    const current = (await api.today()).current;
+    beadleDay.innerText = current.day;
 }
 
 start().finally(() => {
-	console.log("hi");
+    document.body.classList.remove("loading");
 });

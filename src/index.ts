@@ -1,15 +1,19 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { IttyRouter, type RouterType } from "itty-router";
-import { adminRoutes } from "./routes/admin.ts";
-import * as sql from "./lib/sql.ts";
-import { env } from "cloudflare:workers";
-import { routes } from "./routes/bea.ts";
+
 import { getDrawingFor } from "./lib/drawings.ts";
+import * as sql from "./lib/sql.ts";
+import { adminRoutes } from "./routes/admin.ts";
+import { routes } from "./routes/bea.ts";
+import { env } from "cloudflare:workers";
 
 const _404 = () => new Response(null, { status: 404 });
 
 export interface Env {
 	db: D1Database;
+	public: {
+		fetch(request: Request): Promise<Response>;
+	};
 	__router?: RouterType;
 }
 const ONE_DAY = 1000 * 60 * 60 * 23.9;
@@ -26,7 +30,13 @@ export default {
 			adminRoutes(router);
 			routes(router);
 
-			router.all("*", () => {
+			router.all("*", async (request: Request, env: Env) => {
+				const response = await env.public.fetch(request);
+
+				if (response.status !== 404) {
+					return response;
+				}
+
 				return Response.json(
 					{
 						status: 404,
@@ -38,7 +48,7 @@ export default {
 			appEnv.__router = router;
 		}
 
-		return appEnv.__router.fetch(request);
+		return appEnv.__router.fetch(request, appEnv);
 	},
 
 	async scheduled(

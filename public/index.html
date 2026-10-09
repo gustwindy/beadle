@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="style.css">
         <title>Beadle</title>
     </head>
-<body>
+<body class="loading">
     <nav>
         <a href="/" class="logo">beadle logo</a> v0.1.0
         <div>
@@ -14,12 +14,15 @@
         </div>
     </nav>
     <div class="content">
-        <div class="welcome">
+        <div class="welcome active">
+            <span style="opacity: 0.5">made by windy & spanier for vallycord !!</span>
             <span class="logo"></span>
-            <h1>Today's beadle: #{id}</h1>
-            <a href="aaa">{data.streak}</a>
+            <div class="wait-for-load">
+                <h1>Today's beadle: #<span id="beadleDay"></span></h1>
+                <button type="button">Start</button>
+            </div>
         </div>
-        <div class="game active">
+        <div class="game">
             <div class="drawing">
                 <img src="/have fun spanier/sam/sam4.png" alt="drawing">
             </div>

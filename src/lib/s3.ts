@@ -1,11 +1,12 @@
 /** biome-ignore-all lint/style/useNamingConvention: not my fault */
 import {
-	S3Client,
-	PutObjectCommand,
 	GetObjectCommand,
+	PutObjectCommand,
+	S3Client,
 } from "@aws-sdk/client-s3";
-import { env } from "cloudflare:workers";
 import { createHash } from "crypto";
+
+import { env } from "cloudflare:workers";
 
 function createS3() {
 	return new S3Client({

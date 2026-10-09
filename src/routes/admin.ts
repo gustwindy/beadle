@@ -1,8 +1,9 @@
-import type { RouterType, IRequest } from "itty-router";
-import { env } from "cloudflare:workers";
-import * as sql from "../lib/sql.ts";
+import type { IRequest, RouterType } from "itty-router";
+
 import { notFound, serverFault, yourFault } from "../lib/errors.ts";
 import { getImage } from "../lib/s3.ts";
+import * as sql from "../lib/sql.ts";
+import { env } from "cloudflare:workers";
 
 const withRequireAdmin = async (request: IRequest) => {
 	try {

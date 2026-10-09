@@ -1,160 +1,185 @@
 @font-face {
-	font-family: "Sniglet";
-	src: url("/assets/fonts/Sniglet.ttf");
+    font-family: "Sniglet";
+    src: url("/assets/fonts/Sniglet.ttf");
 }
 @font-face {
-	font-family: "Edu QLD Hand";
-	src: url("/assets/fonts/EduQLDHand.ttf");
+    font-family: "Edu QLD Hand";
+    src: url("/assets/fonts/EduQLDHand.ttf");
 }
 
 body {
-	background-color: #271842;
-	font-family: "Sniglet", monospace;
-	color: #beabea;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
-	align-content: center;
-	justify-content: center;
+    background-color: #271842;
+    font-family: "Sniglet", monospace;
+    color: #beabea;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    align-content: center;
+    justify-content: center;
 }
 
 .logo {
-	color: transparent;
-	font-size: 0;
-	background-image: url("/assets/spanier.png");
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
+    color: transparent;
+    font-size: 0;
+    background-image: url("/assets/spanier.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 nav {
-	height: 50px;
-	display: flex;
-	background-color: #22123c;
-	padding: 5px;
-	width: calc(100vw - 10px);
+    height: 50px;
+    display: flex;
+    background-color: #22123c;
+    padding: 5px;
+    width: calc(100vw - 10px);
 
-	.logo {
-		width: 100px;
-		height: 50px;
-	}
+    .logo {
+        width: 100px;
+        height: 50px;
+    }
 }
 
 .content {
-	display: flex;
-	width: 100vw;
-	flex: 1;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+    display: flex;
+    width: 100vw;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .content > div {
-	display: none;
+    display: none;
 }
 
 .content > div.active {
-	display: flex;
-	flex-direction: column;
-	width: 100vw;
-	flex: 1;
-	align-items: center;
-	justify-content: center;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 }
 
 .welcome {
-	.logo {
-		width: 70vw;
-		height: 20vh;
-		margin-bottom: 10vh;
-	}
+    .logo {
+        width: 70vw;
+        height: 20vh;
+        margin-bottom: 10vh;
+    }
 }
 
 .game {
-	.drawing {
-		margin: 30px;
-		display: flex;
-		max-height: 70vh;
-		flex: 3;
+    .drawing {
+        margin: 30px;
+        display: flex;
+        max-height: 70vh;
+        flex: 3;
 
-		padding: 15px 20px 15px 20px;
-		background-color: #010813;
-		border: solid 2px #00050f;
-		border-radius: 15px;
+        padding: 15px 20px 15px 20px;
+        background-color: #010813;
+        border: solid 2px #00050f;
+        border-radius: 15px;
 
-		img {
-			max-height: 100%;
-			border-radius: 15px;
-		}
-	}
+        img {
+            max-height: 100%;
+            border-radius: 15px;
+        }
+    }
 
-	.guess-box {
-		border-radius: 15px;
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		justify-content: end;
-		width: 40vw;
-		min-width: 400px;
-		min-height: 100px;
-		max-height: 170px;
-		margin: auto;
-		margin-bottom: 0;
-		padding: 15px;
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
-		background-color: #010813;
-		border: solid 2px #00050f;
-		border-bottom: none;
-	}
+    .guess-box {
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-content: end;
+        width: 40vw;
+        min-width: 400px;
+        min-height: 100px;
+        max-height: 170px;
+        margin: auto;
+        margin-bottom: 0;
+        padding: 15px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: #010813;
+        border: solid 2px #00050f;
+        border-bottom: none;
+    }
 }
 
 .history {
-	overflow-y: scroll;
-	flex: 1;
+    overflow-y: scroll;
+    flex: 1;
 }
 
 .past-guess {
-	display: block;
+    display: block;
 }
 
 .hint {
-	color: #ffc400;
-	font-family: "Edu QLD Hand", cursive;
-	margin-left: 15px;
+    color: #ffc400;
+    font-family: "Edu QLD Hand", cursive;
+    margin-left: 15px;
 
-	.label {
-		font-family: "Sniglet", monospace;
-		color: #ffd509;
-	}
+    .label {
+        font-family: "Sniglet", monospace;
+        color: #ffd509;
+    }
 }
 .guess {
-	color: #97e0fb;
-	font-family: "Edu QLD Hand", cursive;
-	.label {
-		color: #848ae3;
-	}
+    color: #97e0fb;
+    font-family: "Edu QLD Hand", cursive;
+    .label {
+        color: #848ae3;
+    }
 }
 
 .guess-input {
-	display: flex;
-	gap: 5px;
-	margin-top: 5px;
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
 
-	input {
-		flex: 1;
-		background-color: #0a1623;
-		border: 1px solid #121f2b;
-		border-radius: 5px;
-		font-family: "Edu QLD Hand", cursive;
-		outline: none;
-		color: #848ae3;
-	}
-	button {
-		background-color: #0a1623;
-		border: 1px solid #848ae3;
-		border-radius: 5px;
-		color: #848ae3;
-	}
+    input {
+        flex: 1;
+        background-color: #0a1623;
+        border: 1px solid #121f2b;
+        border-radius: 5px;
+        font-family: "Edu QLD Hand", cursive;
+        outline: none;
+        color: #848ae3;
+    }
+    button {
+        background-color: #0a1623;
+        border: 1px solid #848ae3;
+        border-radius: 5px;
+        color: #848ae3;
+    }
+}
+
+.loading .wait-for-load {
+    position: relative;
+}
+.loading .wait-for-load::before {
+    left: -5px;
+    top: -5px;
+    padding: 5px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    content: "";
+}
+
+.loading .wait-for-load::after {
+    content: "Loading...";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    color: white;
 }

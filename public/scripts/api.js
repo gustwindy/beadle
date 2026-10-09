@@ -1,12 +1,16 @@
 export const baseApi = "/api/";
 
-function api(endpoint) {
-	return baseApi + endpoint;
+async function api(endpoint, init) {
+    const url = baseApi + endpoint;
+
+    try {
+        return await (await fetch(url, init)).json();
+    } catch (e) {
+        alert("please scream at windy. something went wrong (check devtools)");
+        console.error(e);
+    }
 }
 
 export async function today() {
-	const res = await fetch(api("bea"), {
-		next: { revalidate: 300 },
-	});
-	return await res.json();
+    return await api("today");
 }
