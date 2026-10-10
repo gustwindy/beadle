@@ -65,7 +65,8 @@ async function run() {
   input.addEventListener("input", () => {
     guessOptionsList.replaceChildren();
     artists.forEach((a) => {
-      if (a.commonName.includes(input.value.toLowerCase())) {
+      //avoiding showing the recommendation if its exactly like that in the box
+      if (a.commonName.includes(input.value.toLowerCase()) && (a.commonName !== input.value.toLowerCase())) {
         const option = document.createElement("option");
         option.value = a.commonName;
         guessOptionsList.appendChild(option);
