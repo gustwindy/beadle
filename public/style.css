@@ -154,10 +154,15 @@ nav {
 }
 
 button {
+    transition-duration: 0.4s;
     background-color: #0a1623;
     border: 1px solid #848ae3;
     border-radius: 5px;
     color: #848ae3;
+}
+button:hover {
+    background-color: #848ae3;
+    color:#0a1623;
 }
 
 .loading .wait-for-load {
@@ -193,7 +198,8 @@ button {
     border-radius: 15px;
     display: flex;
     /*min-height: 100px;*/
-    min-width: 300px; /*idk i would like this to be larger but no clue how to then make it work on phone*/
+    /*idk i would like this to be larger but no clue how to then make it work on phone*/
+    min-width: 300px;
     text-align: center;
     flex-direction: column;
 
