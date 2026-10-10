@@ -69,10 +69,8 @@ async function run() {
       .filter((artist) =>
         artist.commonName.toLowerCase().includes(input.value.toLowerCase().toLowerCase())
       )
-    var counter = 0;
-    for (const artist of matches) {
+    matches.forEach((artist, counter) => {
       if (counter < 5) {
-        counter++;
         const newButton = document.createElement("button");
         newButton.textContent = artist.commonName;
         newButton.className = "suggestions";
@@ -80,10 +78,9 @@ async function run() {
         newButton.addEventListener("click", () => {
           input.value = newButton.textContent;
         })
-
         suggestions.appendChild(newButton);
-        }
-    }
+      };
+    })
   })
 
   submit.addEventListener("click", async () => {
