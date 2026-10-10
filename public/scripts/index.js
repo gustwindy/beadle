@@ -12,10 +12,12 @@ const start = document.getElementById("start");
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
 const history = document.getElementById("history");
+const guessOptionsList = document.getElementById("guesses")
 
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
 const guessInput = document.querySelector(".guess-input");
+
 
 let waiting = false;
 
@@ -54,13 +56,24 @@ async function run() {
 
     drawing.src = current.drawing;
 
-    input.addEventListener("keydown", (ev) => {
+  input.addEventListener("keydown", (ev) => {
         if (ev.key === "Enter") {
             submit.click();
         }
     });
 
-    submit.addEventListener("click", async () => {
+  input.addEventListener("input", () => {
+    guessOptionsList.replaceChildren();
+    artists.forEach((a) => {
+      if (a.commonName.includes(input.value.toLowerCase())) {
+        const option = document.createElement("option");
+        option.value = a.commonName;
+        guessOptionsList.appendChild(option);
+      }
+    });
+  })
+
+  submit.addEventListener("click", async () => {
         if (waiting) return;
         const guess = input.value.trim().toLowerCase();
         if (Object.keys(aliasMap).includes(guess)) {

@@ -34,7 +34,8 @@
                 <div class="guess-box">
                     <div class="history" id="history"></div>
                     <div class="guess-input">
-                        <input id="input" maxlength="27" />
+                        <input id="input" list="guesses" maxlength="27" />
+                        <datalist id="guesses"></datalist>
                         <button type="button" id="submit">Submit</button>
                     </div>
                 </div>
@@ -42,6 +43,7 @@
         </div>
 
         <div id="template">
+
             <span class="past-guess">
                 <span class="guess">
                     <span class="label">&gt;</span>
