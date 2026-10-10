@@ -12,7 +12,7 @@ const start = document.getElementById("start");
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
 const history = document.getElementById("history");
-const guessOptionsList = document.getElementById("guesses")
+const suggestions = document.getElementById("suggestions");
 
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
@@ -63,15 +63,27 @@ async function run() {
     });
 
   input.addEventListener("input", () => {
-    guessOptionsList.replaceChildren();
-    artists.forEach((a) => {
+    suggestions.replaceChildren();
       //avoiding showing the recommendation if its exactly like that in the box
-      if (a.commonName.includes(input.value.toLowerCase()) && (a.commonName !== input.value.toLowerCase())) {
-        const option = document.createElement("option");
-        option.value = a.commonName;
-        guessOptionsList.appendChild(option);
-      }
-    });
+    const matches = artists
+      .filter((artist) =>
+        artist.commonName.toLowerCase().includes(input.value.toLowerCase().toLowerCase())
+      )
+    var counter = 0;
+    for (const artist of matches) {
+      if (counter < 5) {
+        counter++;
+        const newButton = document.createElement("button");
+        newButton.textContent = artist.commonName;
+        newButton.className = "suggestions";
+
+        newButton.addEventListener("click", () => {
+          input.value = newButton.textContent;
+        })
+
+        suggestions.appendChild(newButton);
+        }
+    }
   })
 
   submit.addEventListener("click", async () => {
