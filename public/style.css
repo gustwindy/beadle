@@ -138,9 +138,10 @@ nav {
     display: flex;
     gap: 5px;
     margin-top: 5px;
-
     input {
         flex: 1;
+        min-height: 30px;
+        font-size: 20px;
         background-color: #0a1623;
         border: 1px solid #121f2b;
         border-radius: 5px;
@@ -189,6 +190,9 @@ button {
     color: #848ae3;
     border-radius: 15px;
     display: flex;
+    /*min-height: 100px;*/
+    min-width: 300px; /*idk i would like this to be larger but no clue how to then make it work on phone*/
+    text-align: center;
     flex-direction: column;
 
     button {

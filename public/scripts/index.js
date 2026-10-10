@@ -72,7 +72,7 @@ async function run() {
             return;
         }
         if (!artistNames.includes(guess)) {
-            input.value = "";
+            //input.value = "";
             addComment("Invalid artist!");
 
             return;
