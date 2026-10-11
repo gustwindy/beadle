@@ -12,10 +12,12 @@ const start = document.getElementById("start");
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
 const history = document.getElementById("history");
+const suggestions = document.getElementById("suggestions");
 
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
 const guessInput = document.querySelector(".guess-input");
+
 
 let waiting = false;
 
@@ -54,13 +56,34 @@ async function run() {
 
     drawing.src = current.drawing;
 
-    input.addEventListener("keydown", (ev) => {
+  input.addEventListener("keydown", (ev) => {
         if (ev.key === "Enter") {
             submit.click();
         }
     });
 
-    submit.addEventListener("click", async () => {
+  input.addEventListener("input", () => {
+    suggestions.replaceChildren();
+      //avoiding showing the recommendation if its exactly like that in the box
+    const matches = artists
+      .filter((artist) =>
+        artist.commonName.toLowerCase().includes(input.value.toLowerCase().toLowerCase())
+      )
+    matches.forEach((artist, counter) => {
+      if (counter < 5) {
+        const newButton = document.createElement("button");
+        newButton.textContent = artist.commonName;
+        newButton.className = "suggestions";
+
+        newButton.addEventListener("click", () => {
+          input.value = newButton.textContent;
+        })
+        suggestions.appendChild(newButton);
+      };
+    })
+  })
+
+  submit.addEventListener("click", async () => {
         if (waiting) return;
         const guess = input.value.trim().toLowerCase();
         if (Object.keys(aliasMap).includes(guess)) {
@@ -72,7 +95,7 @@ async function run() {
             return;
         }
         if (!artistNames.includes(guess)) {
-            input.value = "";
+            //input.value = "";
             addComment("Invalid artist!");
 
             return;
