@@ -64,6 +64,14 @@ export function removeDrawing(db: D1Database, id: number) {
 	return db.prepare("DELETE FROM drawings WHERE id = ?").bind(id);
 }
 
+export async function getForced(db: D1Database): Promise<DbForced | null> {
+	return await db.prepare("SELECT * FROM forced WHERE thisShouldBe0 = 0").first();
+}
+
+export function setForced(db: D1Database, drawingId: number) {
+	return db.prepare("INSERT OR REPLACE INTO forced (thisshouldbe0,drawingid) VALUES (?,?)").bind(0,drawingId);
+}
+
 export function listArtists(db: D1Database) {
 	return db.prepare("SELECT * FROM artists");
 }
@@ -126,5 +134,9 @@ export type DbDrawing = {
 export type DbHistory = {
 	day: number;
 	time: number;
+	drawingId: number;
+};
+
+export type DbForced = {
 	drawingId: number;
 };

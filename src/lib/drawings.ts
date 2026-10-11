@@ -4,6 +4,17 @@ import { env } from "cloudflare:workers";
 export async function getDrawingFor(
 	day: number,
 ): Promise<sql.DbDrawing | null> {
+    try {
+        const forced = await sql.getForced(env.beadle);
+        if (forced && forced.drawingId !== -1) {
+            await sql.setForced(env.beadle, -1).run();
+
+            return await sql.getDrawing(env.beadle, forced.drawingId).first();
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
 	const bucket = await getPossibilitiesFor(day);
 	console.log(bucket.length);
 	if (bucket.length === 0) {

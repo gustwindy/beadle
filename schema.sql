@@ -22,3 +22,8 @@ CREATE TABLE IF NOT EXISTS history (
     time INTEGER UNIQUE,
 	drawingId INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS forced (
+    thisShouldBe0 INTEGER PRIMARY KEY UNIQUE,
+	drawingId INTEGER
+);

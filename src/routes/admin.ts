@@ -70,6 +70,20 @@ export function adminRoutes(app: RouterType) {
 	);
 
 	app.post(
+		"/api/admin/force/",
+		withRequireAdmin,
+		async ({ content }) => {
+			if (!content.id) return yourFault("id: int");
+			await sql.setForced(env.beadle, content.id).run();
+
+			return Response.json({
+				status: "200",
+			});
+		},
+	);
+
+
+	app.post(
 		"/api/admin/drawings/list/",
 		withRequireAdmin,
 		async ({ _content }) => {
