@@ -17,6 +17,13 @@ const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
 const guessInput = document.querySelector(".guess-input");
 
+const browserState = {
+    screen: "welcome",
+    streak: 0,
+    day: 0,
+    guesses: [],
+};
+
 let waiting = false;
 
 async function addHistory(guess, hint) {
