@@ -159,16 +159,32 @@ nav {
     left: 0;
     right: 0;
     bottom: 100%;
+    background-color: #131f2d;
+    margin: 5px;
+    max-width: max-content;
+    min-width: 10vw;
+    border-radius: 5px;
+    border: 1px solid #1e2b39;
+    padding-top: 10px;
+}
+
+.suggestions::after {
+    content: "SUGGESTIONS";
+    position: absolute;
+    top: 0;
+    left: 5px;
+    color: #2d3a49;
+    font-size: 14px;
 }
 
 .suggestion {
     display: block;
     width: 100%;
     text-align: left;
+    padding: 5px;
+    padding-left: 10px;
     background: transparent;
 }
-
-
 
 button {
     transition-duration: 0.4s;
@@ -179,7 +195,7 @@ button {
 }
 button:hover {
     background-color: #848ae3;
-    color:#0a1623;
+    color: #0a1623;
 }
 
 .loading .wait-for-load {
@@ -253,4 +269,97 @@ img {
 
 .comment {
     color: #6e6a79;
+}
+
+.hidden {
+    display: none;
+}
+
+.results {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+}
+
+.results-popup {
+    background-color: #015b73;
+    border: 1px solid #61a9c3;
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+
+    h1,
+    h2 {
+        margin: 0;
+        color: #bbf7ff;
+    }
+
+    h2 {
+        opacity: 0.25;
+    }
+
+    button {
+        margin: 5px;
+        padding: 5px;
+        padding-left: 10px; /* ?? */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.copy-icon {
+    background-image: url(assets/copy.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 10px;
+    width: 10px;
+    display: block;
+    transition: 0.4s background-image;
+}
+
+button:hover .copy-icon {
+    /* LOOK AWAY AAAAWTH */
+    background-image: url(assets/copy2.png);
+}
+
+#squares {
+    display: flex;
+    margin: 5px;
+    gap: 3px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #004b63;
+    border: 1px solid #003146;
+}
+
+.square {
+    border-radius: 5px;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 20px;
+}
+
+.square.gray {
+    background-color: #31373d;
+}
+.square.yellow {
+    background-color: #fdcb58;
+}
+.square.correct {
+    background-color: #aa8ed6;
+}
+
+.square.fail {
+    background-color: #ff847c;
 }
