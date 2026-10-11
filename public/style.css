@@ -135,12 +135,14 @@ nav {
 }
 
 .guess-input {
+    position: relative;
     display: flex;
     gap: 5px;
     margin-top: 5px;
-
     input {
         flex: 1;
+        min-height: 30px;
+        font-size: 20px;
         background-color: #0a1623;
         border: 1px solid #121f2b;
         border-radius: 5px;
@@ -150,11 +152,34 @@ nav {
     }
 }
 
+.suggestions {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+}
+
+.suggestion {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+}
+
+
+
 button {
+    transition-duration: 0.4s;
     background-color: #0a1623;
     border: 1px solid #848ae3;
     border-radius: 5px;
     color: #848ae3;
+}
+button:hover {
+    background-color: #848ae3;
+    color:#0a1623;
 }
 
 .loading .wait-for-load {
@@ -189,6 +214,10 @@ button {
     color: #848ae3;
     border-radius: 15px;
     display: flex;
+    /*min-height: 100px;*/
+    /*idk i would like this to be larger but no clue how to then make it work on phone*/
+    min-width: 300px; /* maybe no good? */
+    text-align: center;
     flex-direction: column;
 
     button {
