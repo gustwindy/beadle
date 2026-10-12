@@ -171,9 +171,9 @@ nav {
 .suggestions::after {
     content: "SUGGESTIONS";
     position: absolute;
-    top: 0;
+    top: -10px;
     left: 5px;
-    color: #2d3a49;
+    color: orange;
     font-size: 14px;
 }
 
@@ -183,6 +183,7 @@ nav {
     text-align: left;
     padding: 5px;
     padding-left: 10px;
+    border-radius: 0px;
     background: transparent;
 }
 

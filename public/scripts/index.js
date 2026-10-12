@@ -226,10 +226,13 @@ async function run() {
         }
     });
 
-
-    input.addEventListener("blur", (ev) => {
+    /*input.addEventListener("blur", (ev) => {
       suggestions.classList.toggle("hidden", ev);
-      });
+      });*/
+
+  input.addEventListener("focus", (ev) => {
+    //look for suggestions here too
+  });
 
   input.addEventListener("input", () => {
         suggestions.replaceChildren();
@@ -245,12 +248,13 @@ async function run() {
         suggestions.classList.toggle("hidden", (matches.length === 0));
         matches.forEach((artist, counter) => {
             if (counter < 5) {
-                const newButton = document.createElement("span");
+                const newButton = document.createElement("button");
                 newButton.textContent = artist.commonName;
                 newButton.className = "suggestion";
 
                 newButton.addEventListener("click", () => {
-                    input.value = newButton.textContent;
+                  input.value = newButton.textContent;
+                  suggestions.classList.toggle("hidden");
                 });
                 suggestions.appendChild(newButton);
             }
