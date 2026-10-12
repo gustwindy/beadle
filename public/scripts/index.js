@@ -271,7 +271,8 @@ async function run() {
 
     submit.addEventListener("click", async () => {
         const stupidFunctionThatShouldntEvenBeAVariable = () => {
-            if (browserState.guesses.length == 5) {
+          if (browserState.guesses.length == 5)
+              if (browserState.guesses[4].type != "correct"){
                 browserState.guesses.push({
                     type: "fail",
                     value: "you failed btw",
