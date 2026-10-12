@@ -252,7 +252,7 @@ img {
 }
 
 .drawing {
-    max-height: 80vh;
+    max-height: 70vh;
     display: flex;
     padding: 15px 20px 15px 20px;
     background-color: #010813;
