@@ -78,11 +78,12 @@ async function addHistory(guess, hint) {
 async function addComment(comment) {
     const el = commentTemplate.cloneNode(true);
     el.querySelector(".comment").innerText = comment;
-
-    browserState.guesses.push({
+    if (!(comment !== "invalid artist")){
+      browserState.guesses.push({
         type: "comment",
         value: comment,
     });
+  }
 
     history.appendChild(el);
 
@@ -149,7 +150,7 @@ async function run() {
         browserState.guesses.forEach((v) => {
             switch (v.type) {
                 case "comment":
-                    children.push(dumbSquare("gray", "?"));
+                    //children.push(dumbSquare("gray", "?"));
                     break;
                 case "hinted":
                     children.push(dumbSquare("yellow", "!"));
@@ -225,18 +226,23 @@ async function run() {
         }
     });
 
-    input.addEventListener("input", () => {
+
+    input.addEventListener("blur", (ev) => {
+      suggestions.classList.toggle("hidden", ev);
+      });
+
+  input.addEventListener("input", () => {
         suggestions.replaceChildren();
-        if (input.value.length < 3) {
+        /*if (input.value.length < 3) {
             suggestions.classList.toggle("hidden", true);
             return;
-        }
+            }*/
         const matches = artists.filter((artist) =>
             artist.commonName
                 .toLowerCase()
                 .includes(input.value.toLowerCase().toLowerCase()),
         );
-        suggestions.classList.toggle("hidden", matches.length === 0);
+        suggestions.classList.toggle("hidden", (matches.length === 0));
         matches.forEach((artist, counter) => {
             if (counter < 5) {
                 const newButton = document.createElement("span");
