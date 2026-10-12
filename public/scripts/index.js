@@ -205,7 +205,7 @@ async function run() {
         final.push(
             ` in ${formatTime(browserState.endTime - browserState.startTime)})`,
         );
-        navigator.clipboard.writeText(final.join(""));
+        navigator.clipboard.writeText(final.join("") + "\n https://beadle.guhw.dev/");
         alert("copied");
     });
 
@@ -255,6 +255,7 @@ async function run() {
                 newButton.addEventListener("click", () => {
                   input.value = newButton.textContent;
                   suggestions.classList.toggle("hidden");
+                  input.focus();
                 });
                 suggestions.appendChild(newButton);
             }
