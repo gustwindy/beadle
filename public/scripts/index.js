@@ -136,15 +136,20 @@ async function run() {
         alert("ur streak broke btw no popup for this yet");
     }
 
-    if (browserState.screen === "results") {
-        // ohh yuck
+  if (browserState.screen === "results") {
+    // ohh yuck
 
-        if (browserState.endTime === -1) {
-            browserState.endTime = Date.now();
-            saveState();
-        }
-        beadleDayResults.innerText = current.day;
-        guessCount.innerText = browserState.guesses.length;
+    if (browserState.endTime === -1) {
+      browserState.endTime = Date.now();
+      saveState();
+    }
+    beadleDayResults.innerText = current.day;
+    if (browserState.guesses.length == 6){
+      guessCount.innerText = "You made Bea sad 💔";
+      timestamp.hidden = true;
+    }
+    else
+      guessCount.innerText = `in ${browserState.guesses.length} guesses,`;
         const children = [];
 
         browserState.guesses.forEach((v) => {
@@ -196,12 +201,14 @@ async function run() {
                     break;
 
                 case "fail":
-                    final.push("💥");
+                  final.push("💥");
                     break;
             }
         });
-
-        final.push(` (${browserState.guesses.length}`);
+        if (browserState.guesses.length == 6)
+          final.push(`(X/5`)
+        else
+          final.push(` (${browserState.guesses.length}/5`);
         final.push(
             ` in ${formatTime(browserState.endTime - browserState.startTime)})`,
         );
