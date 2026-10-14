@@ -60,6 +60,30 @@ function saveState() {
 
 let waiting = false;
 
+async function makeSuggestions(artists) {
+  suggestions.replaceChildren();
+  const matches = artists.filter((artist) =>
+      artist.commonName
+          .toLowerCase()
+          .includes(input.value.toLowerCase().toLowerCase()),
+  );
+  suggestions.classList.toggle("hidden", (matches.length === 0));
+  matches.forEach((artist, counter) => {
+      if (counter < 5) {
+          const newButton = document.createElement("button");
+          newButton.textContent = artist.commonName;
+          newButton.className = "suggestion";
+
+          newButton.addEventListener("click", () => {
+            input.value = newButton.textContent;
+            suggestions.classList.toggle("hidden");
+            input.focus();
+          });
+          suggestions.appendChild(newButton);
+      }
+  });
+}
+
 async function addHistory(guess, hint) {
     const el = guessTemplate.cloneNode(true);
     el.querySelector(".guess .value").innerText = guess;
@@ -233,41 +257,9 @@ async function run() {
         }
     });
 
-    /*input.addEventListener("blur", (ev) => {
-      suggestions.classList.toggle("hidden", ev);
-      });*/
+  input.addEventListener("focus", () => makeSuggestions(artists));
+  input.addEventListener("input", () => makeSuggestions(artists));
 
-  input.addEventListener("focus", (ev) => {
-    //look for suggestions here too
-  });
-
-  input.addEventListener("input", () => {
-        suggestions.replaceChildren();
-        /*if (input.value.length < 3) {
-            suggestions.classList.toggle("hidden", true);
-            return;
-            }*/
-        const matches = artists.filter((artist) =>
-            artist.commonName
-                .toLowerCase()
-                .includes(input.value.toLowerCase().toLowerCase()),
-        );
-        suggestions.classList.toggle("hidden", (matches.length === 0));
-        matches.forEach((artist, counter) => {
-            if (counter < 5) {
-                const newButton = document.createElement("button");
-                newButton.textContent = artist.commonName;
-                newButton.className = "suggestion";
-
-                newButton.addEventListener("click", () => {
-                  input.value = newButton.textContent;
-                  suggestions.classList.toggle("hidden");
-                  input.focus();
-                });
-                suggestions.appendChild(newButton);
-            }
-        });
-    });
 
     submit.addEventListener("click", async () => {
         const stupidFunctionThatShouldntEvenBeAVariable = () => {
