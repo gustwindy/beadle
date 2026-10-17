@@ -25,6 +25,8 @@ const guessCount = document.getElementById("guessCount");
 const suggestions = document.getElementById("suggestions");
 const beadleDayResults = document.getElementById("beadleDayResults");
 
+const suggestionsList = suggestions.querySelector(".suggestions-list");
+
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
 const guessInput = document.querySelector(".guess-input");
@@ -61,16 +63,15 @@ function saveState() {
 let waiting = false;
 
 async function makeSuggestions(artists) {
-  suggestions.replaceChildren();
-  const matches = artists.filter((artist) =>
-      artist.commonName
-          .toLowerCase()
-          .includes(input.value.toLowerCase().toLowerCase()),
-  );
+  suggestionsList.replaceChildren();
+  const matches = artists
+    .filter((artist) =>
+      artist.commonName.toLowerCase().includes(input.value.toLowerCase()),)
+    .sort((a, b) => a.commonName.localeCompare(b.commonName));
+
   suggestions.classList.toggle("hidden", (matches.length === 0));
-  matches.forEach((artist, counter) => {
-      if (counter < 5) {
-          const newButton = document.createElement("button");
+  matches.forEach((artist) => {
+      const newButton = document.createElement("button");
           newButton.textContent = artist.commonName;
           newButton.className = "suggestion";
 
@@ -79,8 +80,7 @@ async function makeSuggestions(artists) {
             suggestions.classList.toggle("hidden");
             input.focus();
           });
-          suggestions.appendChild(newButton);
-      }
+          suggestionsList.appendChild(newButton);
   });
 }
 

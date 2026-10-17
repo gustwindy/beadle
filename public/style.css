@@ -167,6 +167,10 @@ nav {
     border: 1px solid #1e2b39;
     padding-top: 10px;
 }
+.suggestions-list{
+    max-height: 140px;
+    overflow-y: auto;
+}
 
 .suggestions::after {
     content: "SUGGESTIONS";
