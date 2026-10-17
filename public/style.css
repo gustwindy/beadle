@@ -170,6 +170,7 @@ nav {
 .suggestions-list{
     max-height: 140px;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .suggestions::after {
