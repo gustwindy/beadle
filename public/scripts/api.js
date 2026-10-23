@@ -1,11 +1,7 @@
 export const baseApi = "/api/";
 
-async function uri(endpoint) {
-    return baseApi + endpoint; // entire function i know
-}
-
 async function api(endpoint, init) {
-    const url = uri(endpoint);
+    const url = baseApi + endpoint;
 
     try {
         return await (await fetch(url, init)).json();
