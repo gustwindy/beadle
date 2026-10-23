@@ -121,7 +121,7 @@ export function routes(app: RouterType) {
 		});
 	});
 
-	app.get("/api/today/answer/:hash", async ({ request }) => {
+	app.get("/api/today/answer/:hash", async (request) => {
 		const { params } = request;
 		if (!params.hash) return yourFault("hash: yeah figure it out");
 
