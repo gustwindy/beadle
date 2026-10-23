@@ -35,7 +35,9 @@
                     <div class="history" id="history"></div>
                     <div class="guess-input">
                         <input id="input" list="guesses" maxlength="27" />
-                        <div id="suggestions" class="suggestions hidden"></div>
+                        <div id="suggestions" class="suggestions hidden">
+                            <div class="suggestions-list"></div>
+                        </div>
                         <button type="button" id="submit">Submit</button>
                     </div>
                 </div>
@@ -44,7 +46,7 @@
                 <div class="results-popup">
                     <h1>Beadle #<span id="beadleDayResults"></span></h1>
                     <h2>
-                        in <span id="guessCount">0</span> guesses,
+                        <span id="guessCount">0</span>
                         <span id="timestamp"></span>
                     </h2>
                     <div id="squares"></div>

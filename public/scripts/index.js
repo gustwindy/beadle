@@ -25,6 +25,8 @@ const guessCount = document.getElementById("guessCount");
 const suggestions = document.getElementById("suggestions");
 const beadleDayResults = document.getElementById("beadleDayResults");
 
+const suggestionsList = suggestions.querySelector(".suggestions-list");
+
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
 const guessInput = document.querySelector(".guess-input");
@@ -60,6 +62,29 @@ function saveState() {
 
 let waiting = false;
 
+async function makeSuggestions(artists) {
+    suggestionsList.replaceChildren();
+    const matches = artists
+        .filter((artist) =>
+            artist.commonName.toLowerCase().includes(input.value.toLowerCase()),
+        )
+        .sort((a, b) => a.commonName.localeCompare(b.commonName));
+
+    suggestions.classList.toggle("hidden", matches.length === 0);
+    matches.forEach((artist) => {
+        const newButton = document.createElement("button");
+        newButton.textContent = artist.commonName;
+        newButton.className = "suggestion";
+
+        newButton.addEventListener("click", () => {
+            input.value = newButton.textContent;
+            suggestions.classList.toggle("hidden");
+            input.focus();
+        });
+        suggestionsList.appendChild(newButton);
+    });
+}
+
 async function addHistory(guess, hint) {
     const el = guessTemplate.cloneNode(true);
     el.querySelector(".guess .value").innerText = guess;
@@ -78,11 +103,12 @@ async function addHistory(guess, hint) {
 async function addComment(comment) {
     const el = commentTemplate.cloneNode(true);
     el.querySelector(".comment").innerText = comment;
-
-    browserState.guesses.push({
-        type: "comment",
-        value: comment,
-    });
+    if (!(comment !== "invalid artist")) {
+        browserState.guesses.push({
+            type: "comment",
+            value: comment,
+        });
+    }
 
     history.appendChild(el);
 
@@ -143,13 +169,17 @@ async function run() {
             saveState();
         }
         beadleDayResults.innerText = current.day;
-        guessCount.innerText = browserState.guesses.length;
+        if (browserState.guesses.length == 6) {
+            guessCount.innerText = "You made Bea sad 💔";
+            timestamp.hidden = true;
+        } else
+            guessCount.innerText = `in ${browserState.guesses.length} guesses,`;
         const children = [];
 
         browserState.guesses.forEach((v) => {
             switch (v.type) {
                 case "comment":
-                    children.push(dumbSquare("gray", "?"));
+                    //children.push(dumbSquare("gray", "?"));
                     break;
                 case "hinted":
                     children.push(dumbSquare("yellow", "!"));
@@ -199,12 +229,14 @@ async function run() {
                     break;
             }
         });
-
-        final.push(` (${browserState.guesses.length}`);
+        if (browserState.guesses.length == 6) final.push(`(X/5`);
+        else final.push(` (${browserState.guesses.length}/5`);
         final.push(
             ` in ${formatTime(browserState.endTime - browserState.startTime)})`,
         );
-        navigator.clipboard.writeText(final.join(""));
+        navigator.clipboard.writeText(
+            final.join("") + "\n https://beadle.guhw.dev/",
+        );
         alert("copied");
     });
 
@@ -225,44 +257,22 @@ async function run() {
         }
     });
 
-    input.addEventListener("input", () => {
-        suggestions.replaceChildren();
-        if (input.value.length < 3) {
-            suggestions.classList.toggle("hidden", true);
-            return;
-        }
-        const matches = artists.filter((artist) =>
-            artist.commonName
-                .toLowerCase()
-                .includes(input.value.toLowerCase().toLowerCase()),
-        );
-        suggestions.classList.toggle("hidden", matches.length === 0);
-        matches.forEach((artist, counter) => {
-            if (counter < 5) {
-                const newButton = document.createElement("span");
-                newButton.textContent = artist.commonName;
-                newButton.className = "suggestion";
-
-                newButton.addEventListener("click", () => {
-                    input.value = newButton.textContent;
-                });
-                suggestions.appendChild(newButton);
-            }
-        });
-    });
+    input.addEventListener("focus", () => makeSuggestions(artists));
+    input.addEventListener("input", () => makeSuggestions(artists));
 
     submit.addEventListener("click", async () => {
         const stupidFunctionThatShouldntEvenBeaVariable = () => {
-            if (browserState.guesses.length >= 5) {
-                browserState.guesses.push({
-                    type: "fail",
-                    value: "you failed btw",
-                });
-                browserState.streak = 0;
-                browserState.screen = "results";
-                saveState();
-                location.reload();
-            }
+            if (browserState.guesses.length === 5)
+                if (browserState.guesses[4].type !== "correct") {
+                    browserState.guesses.push({
+                        type: "fail",
+                        value: "you failed btw",
+                    });
+                    browserState.streak = 0;
+                    browserState.screen = "results";
+                    saveState();
+                    location.reload();
+                }
         };
         if (waiting) return;
         const guess = input.value.trim().toLowerCase();
