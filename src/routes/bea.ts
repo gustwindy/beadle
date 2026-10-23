@@ -120,4 +120,33 @@ export function routes(app: RouterType) {
 			}),
 		});
 	});
+
+	app.get("/api/today/answer/:hash", async ({ request }) => {
+		const { params } = request;
+		if (!params.hash) return yourFault("hash: yeah figure it out");
+
+		const last: null | sql.DbHistory = await sql
+			.lastHistory(env.beadle)
+			.first();
+		if (!last) return serverFault("no beadle ?!");
+
+		const drawing: null | sql.DbDrawing = await sql
+			.getDrawing(env.beadle, last.drawingId)
+			.first();
+		if (!drawing) return serverFault("no drawing ?!");
+
+		const image: null | sql.DbDrawingImage = await sql
+			.getDrawingImage(env.beadle, drawing.hash)
+			.first();
+		if (!image) return serverFault("no image ?!");
+
+		if (params.hash !== image.hash) {
+			return yourFault("no!!");
+		}
+
+		return Response.json({
+			status: "200",
+			artist: drawing.artistId,
+		});
+	});
 }

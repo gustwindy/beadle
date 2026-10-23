@@ -252,7 +252,7 @@ async function run() {
     });
 
     submit.addEventListener("click", async () => {
-        const stupidFunctionThatShouldntEvenBeAVariable = () => {
+        const stupidFunctionThatShouldntEvenBeaVariable = () => {
             if (browserState.guesses.length >= 5) {
                 browserState.guesses.push({
                     type: "fail",
@@ -271,14 +271,14 @@ async function run() {
             addComment(
                 "You typed an alias of an artist name. Submit again to confirm.",
             );
-            stupidFunctionThatShouldntEvenBeAVariable();
+            stupidFunctionThatShouldntEvenBeaVariable();
 
             return;
         }
         if (!artistNames.includes(guess)) {
             //input.value = "";
             addComment("Invalid artist!");
-            stupidFunctionThatShouldntEvenBeAVariable();
+            stupidFunctionThatShouldntEvenBeaVariable();
 
             return;
         }
@@ -311,7 +311,7 @@ async function run() {
             waiting = false;
         }
 
-        stupidFunctionThatShouldntEvenBeAVariable();
+        stupidFunctionThatShouldntEvenBeaVariable();
 
         if (res.correct) {
             location.reload();

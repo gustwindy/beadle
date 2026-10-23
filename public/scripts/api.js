@@ -1,7 +1,11 @@
 export const baseApi = "/api/";
 
+async function uri(endpoint) {
+    return baseApi + endpoint; // entire function i know
+}
+
 async function api(endpoint, init) {
-    const url = baseApi + endpoint;
+    const url = uri(endpoint);
 
     try {
         return await (await fetch(url, init)).json();
@@ -21,4 +25,8 @@ export async function guess(answer) {
 
 export async function artists() {
     return await api("artistList");
+}
+
+export async function getCorrectArtist(imageHash) {
+    return await api(`today/answer/${imageHash}`);
 }
