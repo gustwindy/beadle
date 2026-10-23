@@ -170,7 +170,8 @@ async function run() {
         }
         beadleDayResults.innerText = current.day;
         if (browserState.guesses.length == 6) {
-            guessCount.innerText = "You made Bea sad 💔";
+        const stupidfuckingVar = await api.getCorrectArtist(current.drawing.split("/").reverse()[0]);
+        guessCount.innerText = "You made " + artists.filter((a)=>a.id==stupidfuckingVar.artist)[0].commonName +" sad 💔";
             timestamp.hidden = true;
         } else
             guessCount.innerText = `in ${browserState.guesses.length} guesses,`;
