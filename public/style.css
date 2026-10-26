@@ -167,7 +167,7 @@ nav {
     border: 1px solid #1e2b39;
     padding-top: 10px;
 }
-.suggestions-list{
+.suggestions-list {
     max-height: 140px;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -298,6 +298,8 @@ img {
     display: flex;
     flex-direction: column;
 
+    position: relative;
+
     h1,
     h2 {
         margin: 0;
@@ -368,4 +370,13 @@ button:hover .copy-icon {
 
 .square.fail {
     background-color: #ff847c;
+}
+
+.results-close-button {
+    color: #ff847c;
+    text-decoration: none;
+    font-size: 32px;
+    position: absolute;
+    top: 0;
+    right: 15px;
 }

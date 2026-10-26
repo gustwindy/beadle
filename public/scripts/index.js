@@ -11,6 +11,7 @@ or any of the frontend actually
 import * as api from "./api.js";
 
 // we have an entire like mountain here
+// i swear my roomba can probably write better code than this BUT I DONT CARE WORKING MEANS WORKING
 
 const beadleDay = document.getElementById("beadleDay");
 const drawing = document.getElementById("drawing");
@@ -23,9 +24,12 @@ const squares = document.getElementById("squares");
 const timestamp = document.getElementById("timestamp");
 const guessCount = document.getElementById("guessCount");
 const suggestions = document.getElementById("suggestions");
-const beadleDayResults = document.getElementById("beadleDayResults");
+const beadleDayResults = document.getElementById("beadleDayResults"); // notice how this is in camelCase
 
-const suggestionsList = suggestions.querySelector(".suggestions-list");
+const suggestionsList = suggestions.querySelector(".suggestions-list"); // then not even a breath later we're in kebab-case
+
+// i started using this word in Bomb Party and now i just use it in daily life
+const closeThingymajig = document.querySelector(".results-close-button");
 
 const guessTemplate = document.querySelector("#template .past-guess");
 const commentTemplate = document.querySelector("#template .comment-container");
@@ -169,7 +173,7 @@ async function run() {
             saveState();
         }
         beadleDayResults.innerText = current.day;
-        if (browserState.guesses.length == 6) {
+        if (browserState.guesses.length === 6) {
             guessCount.innerText = "You made Bea sad 💔";
             timestamp.hidden = true;
         } else
@@ -334,6 +338,10 @@ async function run() {
 
         browserState.screen = "game";
         saveState();
+    });
+
+    closeThingymajig.addEventListener("click", () => {
+        document.querySelector(".results").classList.remove("active");
     });
 
     console.log(artists);
