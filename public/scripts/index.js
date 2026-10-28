@@ -349,6 +349,9 @@ async function run() {
 
     closeThingymajig.addEventListener("click", () => {
         document.querySelector(".results").classList.remove("active");
+        waiting = true; // sobbing face emoji
+        guessInput.classList.add("waiting");
+        input.setAttribute("disabled", true);
     });
 
     console.log(artists);
