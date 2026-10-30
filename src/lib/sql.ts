@@ -1,142 +1,145 @@
-import type { D1Database } from "@cloudflare/workers-types";
-import { createHash } from "crypto";
+import { ONE_DAY } from "../constants.ts";
 
-import { uploadImage } from "./s3.ts";
+export const sql = {
+	users: {
+		new: async (
+			db: D1Database,
+			id: string,
+			username: string,
+			displayName: string,
+		) => {
+			return await db
+				.prepare(
+					"INSERT INTO users (id, username, displayName, streak, lastPlaySession) VALUES (?,?,?,?,?)",
+				)
+				.bind(id, username, displayName, 0, JSON.stringify({}))
+				.run();
+		},
 
-export function addArtist(
-	db: D1Database,
-	commonName: string,
-	aliases: string[],
-) {
-	return db
-		.prepare("INSERT INTO artists (commonName,aliases) VALUES (?,?)")
-		.bind(
-			commonName.toLowerCase(),
-			JSON.stringify(aliases.map((a) => a.toLowerCase())),
-		);
-}
+		get: async (db: D1Database, id: string): Promise<DbUser | undefined> => {
+			const user: {
+				id: string;
+				username: string;
+				displayName: string;
 
-export function addDrawing(db: D1Database, artistId: number, hash: string) {
-	return db
-		.prepare("INSERT INTO drawings (artistId,hash) VALUES (?,?)")
-		.bind(artistId, hash);
-}
+				streak: number;
+				lastPlaySession: string;
+			} | null = await db
+				.prepare("SELECT * FROM users WHERE id = ?")
+				.bind(id)
+				.first();
 
-export function addDrawingImage(
-	db: D1Database,
-	hash: string,
-	imageKey: string,
-) {
-	return db
-		.prepare("INSERT INTO images (hash,imageKey) VALUES (?,?)")
-		.bind(hash, imageKey);
-}
+			if (!user) return;
 
-export async function lazyAddDrawing(
-	db: D1Database,
-	artistId: number,
-	image: string,
-) {
-	const hash: string = createHash("md5").update(image).digest("hex");
-	const imageKey = await uploadImage(image);
+			const lastPlaySession = JSON.parse(user.lastPlaySession);
+			return {
+				id: user.id,
+				username: user.username,
+				displayName: user.displayName,
 
-	const artist: null | DbArtist = await getArtist(db, artistId).first();
-	if (!artist) return -1;
+				streak: user.streak,
+				// erm what the frick
+				lastPlaySession:
+					user.lastPlaySession.length > 2 ? lastPlaySession : null,
+			};
+		},
 
-	await addDrawingImage(db, hash, imageKey).run();
-	const res = await addDrawing(db, artist.id, hash).run();
+		fromSession: async (
+			db: D1Database,
+			sessionKey: string,
+		): Promise<DbUser | undefined> => {
+			const session = await sql.sessions.get(db, sessionKey);
+			if (!session) return;
 
-	return res.meta.last_row_id;
-}
+			const user = await sql.users.get(db, session.userId);
+			if (!user) return;
 
-export function addHistory(
-	db: D1Database,
-	day: number,
-	time: number,
-	drawingId: number,
-) {
-	return db
-		.prepare("INSERT INTO history (day,time,drawingId) VALUES (?,?,?)")
-		.bind(day, time, drawingId);
-}
+			return user;
+		},
+	},
+	sessions: {
+		new: async (db: D1Database, userId: string) => {
+			const key = crypto.randomUUID();
+			await db
+				.prepare(
+					"INSERT INTO sessions (sessionKey, expiresAt, userId) VALUES (?,?,?)",
+				)
+				.bind(key, Date.now() + ONE_DAY * 3, userId)
+				.run();
+			return key;
+		},
+		get: async (
+			db: D1Database,
+			sessionKey: string,
+		): Promise<DbSession | undefined> => {
+			const session: DbSession | null = await db
+				.prepare("SELECT * FROM sessions WHERE sessionKey = ?")
+				.bind(sessionKey)
+				.first();
 
-export function removeDrawing(db: D1Database, id: number) {
-	return db.prepare("DELETE FROM drawings WHERE id = ?").bind(id);
-}
+			if (!session || Date.now() > session.expiresAt) return;
 
-export async function getForced(db: D1Database): Promise<DbForced | null> {
-	return await db.prepare("SELECT * FROM forced WHERE thisShouldBe0 = 0").first();
-}
+			await sql.sessions.lengthen(db, session.sessionKey);
 
-export function setForced(db: D1Database, drawingId: number) {
-	return db.prepare("INSERT OR REPLACE INTO forced (thisshouldbe0,drawingid) VALUES (?,?)").bind(0,drawingId);
-}
+			return session;
+		},
+		lengthen: async (db: D1Database, sessionKey: string) => {
+			return await db
+				.prepare("UPDATE sessions SET expiresAt = ? WHERE sessionKey = ?")
+				.bind(Date.now() + ONE_DAY * 3, sessionKey)
+				.run();
+		},
+	},
+	codeCollection: {
+		put: async (db: D1Database, code: string, sessionKey: string) => {
+			await db
+				.prepare(
+					"INSERT INTO codeCollection (code, sessionKey, expiresAt) VALUES (?,?,?)",
+				)
+				.bind(code, sessionKey, Date.now() + ONE_DAY)
+				.run();
+		},
+		get: async (db: D1Database, code: string): Promise<string | undefined> => {
+			const collect: {
+				code: string;
+				sessionKey: string;
+				expiresAt: number;
+			} | null = await db
+				.prepare("SELECT * FROM codeCollection WHERE code = ?")
+				.bind(code)
+				.first();
+			if (!collect) return;
 
-export function listArtists(db: D1Database) {
-	return db.prepare("SELECT * FROM artists");
-}
+			await db
+				.prepare("DELETE FROM codeCollection WHERE code = ?")
+				.bind(code)
+				.run();
 
-export function listDrawings(db: D1Database) {
-	return db.prepare("SELECT * FROM drawings");
-}
+			if (Date.now() > collect.expiresAt) {
+				return;
+			}
 
-export function listHistory(db: D1Database) {
-	return db.prepare("SELECT * FROM history");
-}
-
-export function recentHistory(db: D1Database, today: number) {
-	return db.prepare("SELECT * FROM history WHERE day > ?").bind(today - 10);
-}
-
-export function lastHistory(db: D1Database) {
-	return db.prepare("SELECT * FROM history ORDER BY day DESC LIMIT 1");
-}
-
-export function getDrawing(db: D1Database, id: number) {
-	return db.prepare("SELECT * FROM drawings WHERE id = ?").bind(id);
-}
-
-export function getDrawingImage(db: D1Database, hash: string) {
-	return db.prepare("SELECT * FROM images WHERE hash = ?").bind(hash);
-}
-
-export function getArtist(db: D1Database, id: number) {
-	return db.prepare("SELECT * FROM artists WHERE id = ?").bind(id);
-}
-
-export function updateArtistAlias(
-	db: D1Database,
-	aliases: string[],
-	id: number,
-) {
-	return db
-		.prepare("UPDATE artists SET aliases = ? WHERE id = ?")
-		.bind(JSON.stringify(aliases), id);
-}
-
-export type DbArtist = {
-	id: number;
-	commonName: string;
-	aliases: string;
+			return collect.sessionKey;
+		},
+	},
 };
 
-export type DbDrawingImage = {
-	hash: string;
-	imageKey: string;
+export type DbUser = {
+	id: string;
+	username: string;
+	displayName: string;
+
+	streak: number;
+	lastPlaySession?: {
+		day: number;
+		guessArtistIds: number[];
+		startTime: number;
+		endTime: number;
+	};
 };
 
-export type DbDrawing = {
-	id: number;
-	hash: string;
-	artistId: number;
-};
-
-export type DbHistory = {
-	day: number;
-	time: number;
-	drawingId: number;
-};
-
-export type DbForced = {
-	drawingId: number;
+export type DbSession = {
+	sessionKey: string;
+	expiresAt: number;
+	userId: string;
 };

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Verifying...</title>
+    </head>
+    <body bgcolor="black">
+        <p>verifying...</p>
+        <script>
+            const data = new URLSearchParams(document.location.search);
+            const baseUrl = `${document.location.protocol}//${document.location.host}/`;
+            console.log(data);
+
+            const req = new URL("/auth/collect", document.URL);
+
+            req.searchParams.set("code", data.get("code"));
+            fetch(req).then((v) => {
+                console.log(v);
+                if (!v.ok) return alert("u have to do it again sorry");
+
+                v.json().then((data) => {
+                    console.log(data);
+                    alert();
+                    cookieStore.set("session", data.content);
+                    document.location.replace(baseUrl);
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Redirecting...</title>
+    </head>
+    <body bgcolor="black">
+        <script>
+            const LINK =
+                "https://discord.com/oauth2/authorize?client_id=1557404809055699015&response_type=code&scope=identify+openid+guilds";
+
+            document.location.replace(
+                `${LINK}&redirect_uri=${encodeURIComponent(`${document.location.protocol}//${document.location.host}/auth`)}`,
+            );
+        </script>
+    </body>
+</html>
