@@ -1,4 +1,4 @@
-import { ONE_DAY } from "../constants.ts";
+import { DEFAULT_SETTINGS, ONE_DAY } from "../constants.ts";
 
 export const sql = {
 	users: {
@@ -26,6 +26,8 @@ export const sql = {
 				serverJoinDate: number;
 				avatarHash: string;
 
+				isAdmin: boolean;
+
 				streak: number;
 				lastPlaySession: string;
 				settings: string;
@@ -43,6 +45,7 @@ export const sql = {
 				serverJoinDate: user.serverJoinDate,
 
 				avatarHash: user.avatarHash,
+				isAdmin: user.isAdmin,
 
 				streak: user.streak,
 				// erm what the frick
@@ -50,7 +53,10 @@ export const sql = {
 					user.lastPlaySession.length > 2
 						? JSON.parse(user.lastPlaySession)
 						: null,
-				settings: user.settings.length > 2 ? JSON.parse(user.settings) : {},
+				settings:
+					user.settings.length > 2
+						? JSON.parse(user.settings)
+						: JSON.parse(DEFAULT_SETTINGS),
 			};
 		},
 
@@ -145,6 +151,7 @@ export type DbUser = {
 	username: string;
 	displayName: string;
 
+	isAdmin: boolean;
 	avatarHash: string;
 
 	streak: number;

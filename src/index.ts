@@ -1,6 +1,7 @@
 import { IttyRouter, type RouterType } from "itty-router";
 
 import { notFound } from "./lib/responses.ts";
+import { adminRoutes } from "./routes/admin.ts";
 import { authRoutes } from "./routes/auth.ts";
 import { routes } from "./routes/bea.ts";
 
@@ -20,6 +21,7 @@ export default {
 		if (!appEnv.__router) {
 			const router = IttyRouter();
 
+			adminRoutes(router);
 			authRoutes(router);
 			routes(router);
 

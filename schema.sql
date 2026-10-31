@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
 	avatarHash TEXT NOT NULL,
 
 	streak INTEGER NOT NULL DEFAULT 0,
+	isAdmin BOOLEAN NOT NULL DEFAULT false,
 
 	lastPlaySession TEXT NOT NULL DEFAULT "{}",
 	settings TEXT NOT NULL DEFAULT "{}"

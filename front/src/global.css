@@ -2,10 +2,6 @@
     font-family: "Sniglet";
     src: url("/fonts/Sniglet.ttf");
 }
-@font-face {
-    font-family: "Edu QLD Hand";
-    src: url("/fonts/EduQLDHand.ttf");
-}
 body {
     background-color: #19142d;
     display: flex;

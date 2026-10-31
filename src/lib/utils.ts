@@ -1,7 +1,7 @@
 import type { IRequest } from "itty-router";
 
-import { notFound } from "./responses.ts";
-import { sql } from "./sql.ts";
+import { notFound, serverFault } from "./responses.ts";
+import { type DbUser, sql } from "./sql.ts";
 import { env } from "cloudflare:workers";
 
 export function getCookie(key: string, cookieString?: string | null) {
@@ -15,12 +15,29 @@ export function getCookie(key: string, cookieString?: string | null) {
 export const withRequireAccount = async (request: IRequest) => {
 	try {
 		const session = getCookie("session", request.headers.get("cookie"));
-		if (!session) return notFound("no");
+		if (!session)
+			return env.public.fetch(new URL("/other/redirect.html", request.url));
 
 		request.user = await sql.users.fromSession(env.beadle, session);
-		if (!request.user) return notFound("no");
+		if (!request.user)
+			return env.public.fetch(new URL("/other/redirect.html", request.url));
 	} catch (_err) {
 		return notFound("no");
+	}
+};
+
+export const withRequireAdmin = async (request: IRequest) => {
+	// should be used in conjunction in withRequireAccount or else you will EXPLODE
+
+	try {
+		if (!request.user)
+			return serverFault("can someone tell windy she forgot her self reminder");
+		const user: DbUser = request.user;
+
+		if (!user.isAdmin)
+			return notFound("this should actually be a 401 but like");
+	} catch (_err) {
+		return notFound("eh idk what happened");
 	}
 };
 

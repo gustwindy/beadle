@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -9,5 +10,11 @@ export default defineConfig({
 	build: {
 		outDir: "../public",
 		emptyOutDir: true,
+		rollupOptions: {
+			input: {
+				main: resolve(__dirname, "front/index.html"),
+				admin: resolve(__dirname, "front/admin.html"),
+			},
+		},
 	},
 });
