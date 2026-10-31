@@ -12,17 +12,9 @@ export const sql = {
 		) => {
 			return await db
 				.prepare(
-					"INSERT INTO users (id, serverJoinDate, username, displayName, streak, lastPlaySession, avatarHash) VALUES (?,?,?,?,?,?,?)",
+					"INSERT INTO users (id, serverJoinDate, username, displayName, avatarHash) VALUES (?,?,?,?,?)",
 				)
-				.bind(
-					id,
-					serverJoinDate,
-					username,
-					displayName,
-					0,
-					JSON.stringify({}),
-					avatarHash,
-				)
+				.bind(id, serverJoinDate, username, displayName, avatarHash)
 				.run();
 		},
 
@@ -36,6 +28,7 @@ export const sql = {
 
 				streak: number;
 				lastPlaySession: string;
+				settings: string;
 			} | null = await db
 				.prepare("SELECT * FROM users WHERE id = ?")
 				.bind(id)
@@ -43,7 +36,6 @@ export const sql = {
 
 			if (!user) return;
 
-			const lastPlaySession = JSON.parse(user.lastPlaySession);
 			return {
 				id: user.id,
 				username: user.username,
@@ -55,7 +47,10 @@ export const sql = {
 				streak: user.streak,
 				// erm what the frick
 				lastPlaySession:
-					user.lastPlaySession.length > 2 ? lastPlaySession : null,
+					user.lastPlaySession.length > 2
+						? JSON.parse(user.lastPlaySession)
+						: null,
+				settings: user.settings.length > 2 ? JSON.parse(user.settings) : {},
 			};
 		},
 
@@ -139,6 +134,10 @@ export const sql = {
 	},
 };
 
+export type DbSettings = {
+	useLegacyLogo: boolean;
+};
+
 export type DbUser = {
 	id: string;
 	serverJoinDate: number;
@@ -149,6 +148,7 @@ export type DbUser = {
 	avatarHash: string;
 
 	streak: number;
+	settings: DbSettings;
 	lastPlaySession?: {
 		day: number;
 		guessArtistIds: number[];

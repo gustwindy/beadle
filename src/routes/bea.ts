@@ -1,18 +1,10 @@
-import type { IRequest, RouterType } from "itty-router";
+import type { RouterType } from "itty-router";
 
-import { notFound, response } from "../lib/responses.ts";
-import { type DbUser, sql } from "../lib/sql.ts";
-import {
-	discordIdToTimestamp,
-	getCookie,
-	withRequireAccount,
-} from "../lib/utils.ts";
-import { env } from "cloudflare:workers";
+import { response } from "../lib/responses.ts";
+import { discordIdToTimestamp, withRequireAccount } from "../lib/utils.ts";
 
 export function routes(app: RouterType) {
-	app.get("/api/today/", withRequireAccount, async (request) => {
-		const { user }: { user: DbUser } = request;
-
+	app.get("/api/today/", withRequireAccount, async ({ user }) => {
 		return response([user, discordIdToTimestamp(user.id)]);
 	});
 }

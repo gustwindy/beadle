@@ -11,12 +11,13 @@ CREATE TABLE IF NOT EXISTS users (
 	username TEXT NOT NULL,
 	displayName TEXT NOT NULL,
 
-
 	serverJoinDate INTEGER NOT NULL,
-	streak INTEGER NOT NULL,
+	avatarHash TEXT NOT NULL,
 
-	lastPlaySession TEXT NOT NULL,
-	avatarHash TEXT NOT NULL
+	streak INTEGER NOT NULL DEFAULT 0,
+
+	lastPlaySession TEXT NOT NULL DEFAULT "{}",
+	settings TEXT NOT NULL DEFAULT "{}"
 );
 
 CREATE TABLE IF NOT EXISTS codeCollection (

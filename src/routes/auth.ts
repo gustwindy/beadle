@@ -103,7 +103,7 @@ export function authRoutes(app: RouterType) {
 	app.get("/auth/", async (request) => {
 		const code = request.query.code;
 		if (!code) {
-			return env.public.fetch(new URL("/redirect.html", request.url));
+			return env.public.fetch(new URL("/other/redirect.html", request.url));
 		}
 
 		const codeResult = await checkCode(request.url, code.toString());
@@ -169,7 +169,7 @@ export function authRoutes(app: RouterType) {
 
 		await sql.codeCollection.put(env.beadle, code.toString(), cookie);
 
-		return env.public.fetch(new URL("/auth.html", request.url));
+		return env.public.fetch(new URL("/other/auth.html", request.url));
 	});
 	app.get("/auth/collect", async (request) => {
 		const { code } = request.query;

@@ -1,37 +1,49 @@
 {
-	"name": "beadle",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"format": "biome format --write .",
-		"lint": "biome lint .",
-		"check": "biome check --write ."
-	},
-	"keywords": [],
-	"type": "module",
-	"dependencies": {
-		"@aws-sdk/client-s3": "^3.1148.0",
-		"crypto": "^1.0.1",
-		"express": "^5.2.1",
-		"fs.promises.exists": "^1.1.4",
-		"itty-router": "^5.0.24",
-		"lint-staged": "^17.6.0",
-		"md5": "^2.3.0",
-		"seedrandom": "^3.0.5",
-		"sharp": "^0.35.5"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.5.15",
-		"@cloudflare/workers-types": "^5.20261007.1",
-		"@types/express": "^5.0.6",
-		"@types/md5": "^2.3.6",
-		"@types/node": "^26.6.4",
-		"@types/seedrandom": "^3.0.8",
-		"tsx": "^4.23.15",
-		"typescript": "^7.0.2",
-		"wrangler": "^4.149.0"
-	}
+    "name": "beadle",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "ng build && wrangler dev",
+        "start": "ng build && wrangler dev",
+        "format": "biome format --write .",
+        "lint": "biome lint .",
+        "check": "biome check --write ."
+    },
+    "keywords": [],
+    "type": "module",
+    "dependencies": {
+        "@angular/cli": "^22.2.5",
+        "@angular/common": "^22.2.4",
+        "@angular/compiler": "^22.2.4",
+        "@angular/compiler-cli": "^22.2.4",
+        "@angular/core": "^22.2.4",
+        "@angular/platform-browser": "^22.2.4",
+        "@aws-sdk/client-s3": "^3.1148.0",
+        "crypto": "^1.0.1",
+        "express": "^5.2.1",
+        "fs.promises.exists": "^1.1.4",
+        "itty-router": "^5.0.24",
+        "lint-staged": "^17.6.0",
+        "md5": "^2.3.0",
+        "rxjs": "^7.8.2",
+        "seedrandom": "^3.0.5",
+        "sharp": "^0.35.5",
+        "zone.js": "^0.16.3"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.5.15",
+        "@cloudflare/workers-types": "^5.20261007.1",
+        "@types/express": "^5.0.6",
+        "@types/md5": "^2.3.6",
+        "@types/node": "^26.6.4",
+        "@types/seedrandom": "^3.0.8",
+        "tsx": "^4.23.15",
+        "typescript": "~6.0.3",
+        "wrangler": "^4.149.0"
+    },
+    "allowScripts": {
+        "esbuild@0.28.2": true,
+        "workerd@1.20261006.1": true
+    }
 }

@@ -3,7 +3,6 @@ import { IttyRouter, type RouterType } from "itty-router";
 import { notFound } from "./lib/responses.ts";
 import { authRoutes } from "./routes/auth.ts";
 import { routes } from "./routes/bea.ts";
-import { env } from "cloudflare:workers";
 
 export interface Env {
 	public: {
