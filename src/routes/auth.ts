@@ -44,7 +44,7 @@ async function shouldAllow(token: string) {
 
 	if (!resp.ok) return;
 	const servers: {
-		id: number;
+		id: string;
 		name: string;
 	}[] = await resp.json();
 	const whitelist = env.DISCORD_GUILD_IDS.split(" ");
@@ -53,7 +53,10 @@ async function shouldAllow(token: string) {
 		return whitelist.includes(server.id.toString());
 	});
 
-	return valid.length > 0;
+	valid.sort((a, b) => Number(a.id) - Number(b.id));
+	if (valid.length < 1) return false;
+
+	return valid[0]?.id;
 }
 
 async function getUser(token: string) {
@@ -68,11 +71,32 @@ async function getUser(token: string) {
 	const user: {
 		id: string;
 		username: string;
+		avatar?: string;
 		// biome-ignore lint/style/useNamingConvention: forgot the next lyric
 		global_name?: string;
 	} = await resp.json();
 
 	return user;
+}
+
+async function getServerJoinDate(token: string, serverId: string) {
+	const resp = await fetch(
+		`https://discord.com/api/v10/users/@me/guilds/${serverId}/member`,
+		{
+			headers: {
+				// biome-ignore lint/style/useNamingConvention: the weight of the world
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	);
+
+	if (!resp.ok) return;
+	const user: {
+		// biome-ignore lint/style/useNamingConvention: sigh
+		joined_at: string;
+	} = await resp.json();
+
+	return Date.parse(user.joined_at);
 }
 
 export function authRoutes(app: RouterType) {
@@ -94,6 +118,10 @@ export function authRoutes(app: RouterType) {
 			return yourFault("why'd you do that??? do it again (missing guilds)");
 		if (!scopes.includes("identify"))
 			return yourFault("why'd you do that??? do it again (missing identify)");
+		if (!scopes.includes("guilds.members.read"))
+			return yourFault(
+				"why'd you do that??? do it again (missing guilds members wtv js do it again u know what u did)",
+			);
 
 		const discordUser = await getUser(token);
 		if (discordUser === undefined)
@@ -104,24 +132,30 @@ export function authRoutes(app: RouterType) {
 		let user = await sql.users.get(env.beadle, discordUser?.id);
 
 		if (!user) {
-			const allowed = await shouldAllow(token);
-			if (allowed === undefined)
+			const allowedId = await shouldAllow(token);
+			if (allowedId === undefined)
 				return serverFault(
 					"wait a little and try again. couldnt figure out if ur in vallycord or not. (OR you removed the guild scope. u evil thing)",
 				);
 
-			if (!allowed) {
+			if (allowedId === false) {
 				return yourFault(
 					"you are NOT in vallycord. beadle was only meant for vallylings, sorry !!",
 				);
 			}
 
-			console.log("new user");
+			const joinDate = await getServerJoinDate(token, allowedId);
+			if (!joinDate)
+				return serverFault("couldn't get ur vallycord join date??");
+
+			console.log("new user", joinDate);
 			await sql.users.new(
 				env.beadle,
 				discordUser.id,
+				joinDate,
 				discordUser.username,
 				discordUser.global_name ?? discordUser.username,
+				discordUser.avatar ?? "undefined", // erm
 			);
 
 			user = await sql.users.get(env.beadle, discordUser.id);

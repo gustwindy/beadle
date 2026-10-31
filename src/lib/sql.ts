@@ -5,14 +5,24 @@ export const sql = {
 		new: async (
 			db: D1Database,
 			id: string,
+			serverJoinDate: number,
 			username: string,
 			displayName: string,
+			avatarHash: string,
 		) => {
 			return await db
 				.prepare(
-					"INSERT INTO users (id, username, displayName, streak, lastPlaySession) VALUES (?,?,?,?,?)",
+					"INSERT INTO users (id, serverJoinDate, username, displayName, streak, lastPlaySession, avatarHash) VALUES (?,?,?,?,?,?,?)",
 				)
-				.bind(id, username, displayName, 0, JSON.stringify({}))
+				.bind(
+					id,
+					serverJoinDate,
+					username,
+					displayName,
+					0,
+					JSON.stringify({}),
+					avatarHash,
+				)
 				.run();
 		},
 
@@ -21,6 +31,8 @@ export const sql = {
 				id: string;
 				username: string;
 				displayName: string;
+				serverJoinDate: number;
+				avatarHash: string;
 
 				streak: number;
 				lastPlaySession: string;
@@ -36,6 +48,9 @@ export const sql = {
 				id: user.id,
 				username: user.username,
 				displayName: user.displayName,
+				serverJoinDate: user.serverJoinDate,
+
+				avatarHash: user.avatarHash,
 
 				streak: user.streak,
 				// erm what the frick
@@ -126,8 +141,12 @@ export const sql = {
 
 export type DbUser = {
 	id: string;
+	serverJoinDate: number;
+
 	username: string;
 	displayName: string;
+
+	avatarHash: string;
 
 	streak: number;
 	lastPlaySession?: {

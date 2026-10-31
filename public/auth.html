@@ -21,7 +21,6 @@
 
                 v.json().then((data) => {
                     console.log(data);
-                    alert();
                     cookieStore.set("session", data.content);
                     document.location.replace(baseUrl);
                 });

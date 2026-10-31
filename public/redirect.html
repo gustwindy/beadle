@@ -8,7 +8,7 @@
     <body bgcolor="black">
         <script>
             const LINK =
-                "https://discord.com/oauth2/authorize?client_id=1557404809055699015&response_type=code&scope=identify+openid+guilds";
+                "https://discord.com/oauth2/authorize?client_id=1557404809055699015&response_type=code&scope=guilds+identify+guilds.members.read";
 
             document.location.replace(
                 `${LINK}&redirect_uri=${encodeURIComponent(`${document.location.protocol}//${document.location.host}/auth`)}`,

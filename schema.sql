@@ -11,13 +11,21 @@ CREATE TABLE IF NOT EXISTS users (
 	username TEXT NOT NULL,
 	displayName TEXT NOT NULL,
 
+
+	serverJoinDate INTEGER NOT NULL,
 	streak INTEGER NOT NULL,
 
-	lastPlaySession TEXT NOT NULL
+	lastPlaySession TEXT NOT NULL,
+	avatarHash TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS codeCollection (
 	code TEXT PRIMARY KEY,
 	sessionKey TEXT NOT NULL,
 	expiresAt INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS artist (
+    userId TEXT PRIMARY KEY NOT NULL,
+    displayNameOverride TEXT
 );
