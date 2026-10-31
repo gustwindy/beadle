@@ -2,16 +2,29 @@
     font-family: "Sniglet";
     src: url("/fonts/Sniglet.ttf");
 }
+
 body {
-    background-color: #19142d;
+    background-color: var(--bg1);
     display: flex;
     margin: 0;
     align-items: center;
     justify-content: center;
     height: 100vh;
-
-    color: #afa8e3;
 }
-:root {
+
+::selection {
+    background-color: #8e74eb44;
+}
+
+:root,
+a,
+button {
     font-family: "Sniglet", monospace;
+    color: #afa8e3;
+
+    --bg1: #19142d;
+    --bg2: #221d37;
+    --bg3: #130d26;
+    --border: #aba7c977;
+    --border2: #2a2540;
 }

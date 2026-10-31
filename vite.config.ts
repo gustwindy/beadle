@@ -12,8 +12,8 @@ export default defineConfig({
 		emptyOutDir: true,
 		rollupOptions: {
 			input: {
-				main: resolve(__dirname, "front/index.html"),
-				admin: resolve(__dirname, "front/admin.html"),
+				main: resolve(import.meta.dirname, "front/index.html"),
+				admin: resolve(import.meta.dirname, "front/admin.html"),
 			},
 		},
 	},
