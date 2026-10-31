@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS codeCollection (
 	expiresAt INTEGER NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS artist (
+CREATE TABLE IF NOT EXISTS artists (
     userId TEXT PRIMARY KEY NOT NULL,
-    displayNameOverride TEXT
+    commonName TEXT NOT NULL,
+    aliases TEXT NOT NULL DEFAULT "[]"
 );

@@ -1,3 +1,4 @@
+import { useArtists, useUsers } from "../../lib/dashboardUsuals";
 import "./home.css";
 
 function InfoBox({
@@ -8,7 +9,7 @@ function InfoBox({
     value: string;
 }) {
     return (
-        <span className="infoBox">
+        <span className="boxed">
             <span className="label">{displayName}</span>
             <span className="value">{value}</span>
         </span>
@@ -16,16 +17,23 @@ function InfoBox({
 }
 
 export default function Home() {
-    const aaa = [
+    const users = useUsers();
+    const artists = useArtists();
+
+    const data = [
         {
-            displayName: "Total Drawings",
-            value: 123,
+            displayName: "Total Users",
+            value: users.length,
+        },
+        {
+            displayName: "Total Artists",
+            value: artists.length,
         },
     ];
     return (
         <div>
-            <div className="showoff">
-                {aaa.map((info) => {
+            <div className="horizontal">
+                {data.map((info) => {
                     return (
                         <InfoBox
                             key={info.displayName}

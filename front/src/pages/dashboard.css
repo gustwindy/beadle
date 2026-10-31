@@ -14,3 +14,17 @@ main {
     align-items: start;
     justify-content: center;
 }
+
+.boxed {
+    background-color: var(--bg3);
+    border: 1px solid var(--border2);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+h1 {
+    margin: 0;
+}

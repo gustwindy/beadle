@@ -1,6 +1,6 @@
 import type { IRequest } from "itty-router";
 
-import { notFound, serverFault } from "./responses.ts";
+import { notFound, serverFault, yourFault } from "./responses.ts";
 import { type DbUser, sql } from "./sql.ts";
 import { env } from "cloudflare:workers";
 
@@ -38,6 +38,17 @@ export const withRequireAdmin = async (request: IRequest) => {
 			return notFound("this should actually be a 401 but like");
 	} catch (_err) {
 		return notFound("eh idk what happened");
+	}
+};
+
+export const withJson = async (request: IRequest) => {
+	// should be used in conjunction in withRequireAccount or else you will EXPLODE
+
+	try {
+		request.content = await request.json();
+		if (!request.content) return yourFault("json");
+	} catch (_err) {
+		return yourFault("json");
 	}
 };
 

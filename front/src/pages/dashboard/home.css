@@ -1,8 +1,3 @@
-.showoff {
-    display: flex;
-    gap: 15px;
-}
-
 .infoBox {
     background-color: var(--bg3);
     border: 1px solid var(--border2);

@@ -20,11 +20,40 @@ body {
 a,
 button {
     font-family: "Sniglet", monospace;
-    color: #afa8e3;
+    color: var(--text);
 
+    --accent: #967bef;
+    --text: #afa8e3;
     --bg1: #19142d;
     --bg2: #221d37;
     --bg3: #130d26;
+    --bg4: #0a041b;
     --border: #aba7c977;
     --border2: #2a2540;
+}
+
+.horizontal {
+    display: flex;
+    gap: 15px;
+}
+
+input,
+button {
+    background-color: var(--bg4);
+    border: 1px solid var(--border2);
+    outline: none;
+    color: var(--text);
+    padding: 5px;
+    border-radius: 5px;
+}
+button {
+    background-color: var(--accent);
+    color: var(--bg4);
+    transition: background-color 100ms;
+}
+button:hover {
+    background-color: var(--text);
+}
+button:active {
+    background-color: var(--border);
 }

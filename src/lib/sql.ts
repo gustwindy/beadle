@@ -18,6 +18,14 @@ export const sql = {
 				.run();
 		},
 
+		listIds: async (db: D1Database): Promise<string[]> => {
+			return (await db.prepare("SELECT id FROM users").run()).results.map(
+				(a) => {
+					return <string>a.id;
+				},
+			);
+		},
+
 		get: async (db: D1Database, id: string): Promise<DbUser | undefined> => {
 			const user: {
 				id: string;
@@ -138,10 +146,58 @@ export const sql = {
 			return collect.sessionKey;
 		},
 	},
+	artist: {
+		new: async (db: D1Database, userId: string, commonName: string) => {
+			return await db
+				.prepare("INSERT INTO artists (userId, commonName) VALUES (?,?)")
+				.bind(userId, commonName)
+				.run();
+		},
+		get: async (
+			db: D1Database,
+			userId: string,
+		): Promise<DbArtist | undefined> => {
+			const artist: {
+				userId: string;
+				displayNameOverride: string;
+				aliases: string;
+			} | null = await db
+				.prepare("SELECT * FROM artists WHERE userId = ?")
+				.bind(userId)
+				.first();
+
+			if (!artist) return;
+			const user = await sql.users.get(db, userId);
+
+			return {
+				userId: artist.userId,
+				name: artist.displayNameOverride,
+				imageUrl: user
+					? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.png?size=512`
+					: "/favicon.png",
+				aliases: JSON.parse(artist.aliases),
+			};
+		},
+
+		listIds: async (db: D1Database): Promise<string[]> => {
+			return (await db.prepare("SELECT userId FROM artists").run()).results.map(
+				(a) => {
+					return <string>a.userId;
+				},
+			);
+		},
+	},
 };
 
 export type DbSettings = {
 	useLegacyLogo: boolean;
+};
+
+export type DbArtist = {
+	userId: string;
+	name: string;
+	imageUrl: string;
+	aliases: string[];
 };
 
 export type DbUser = {

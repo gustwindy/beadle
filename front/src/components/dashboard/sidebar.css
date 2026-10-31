@@ -26,5 +26,5 @@
 
 .sidebar a.active,
 .sidebar a:hover {
-    background-color: #130d26;
+    background-color: var(--bg3);
 }

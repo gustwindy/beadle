@@ -1,0 +1,12 @@
+.showoff {
+    display: flex;
+    gap: 15px;
+}
+
+.label {
+    font-size: 16px;
+    color: #8c87a8;
+}
+.value {
+    font-size: 32px;
+}
