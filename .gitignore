@@ -4,3 +4,5 @@ previousBeas.txt
 .wrangler
 *.d.ts
 .env
+.angular
+public/

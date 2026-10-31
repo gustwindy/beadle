@@ -1,0 +1,21 @@
+@font-face {
+    font-family: "Sniglet";
+    src: url("/fonts/Sniglet.ttf");
+}
+@font-face {
+    font-family: "Edu QLD Hand";
+    src: url("/fonts/EduQLDHand.ttf");
+}
+body {
+    background-color: #19142d;
+    display: flex;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    color: #afa8e3;
+}
+:root {
+    font-family: "Sniglet", monospace;
+}
