@@ -6,6 +6,7 @@ import { useHash } from "../lib/useHash";
 import "./dashboard.css";
 import Home from "./dashboard/home";
 import Artists from "./dashboard/artists";
+import Drawings from "./dashboard/drawings";
 
 export default function Dashboard() {
     const hash = useHash();
@@ -24,7 +25,7 @@ export default function Dashboard() {
         {
             id: "drawings",
             name: "Drawings",
-            element: <Home />,
+            element: <Drawings />,
         },
         {
             id: "users",

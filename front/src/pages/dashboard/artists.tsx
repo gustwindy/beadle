@@ -3,14 +3,14 @@ import { useState } from "react";
 import HintedInput from "../../components/hintedInput";
 import "./artists.css";
 import { api } from "../../lib/api";
-import { useArtists, useUsers } from "../../lib/dashboardUsuals";
+import { useArtistIds, useUsers } from "../../lib/dashboardUsuals";
 
 export default function Artists() {
     const [userId, setUserId] = useState("");
     const [name, setName] = useState("");
     const [thingThatCountsUp, set] = useState(0);
     const users = useUsers();
-    const artists = useArtists();
+    const artists = useArtistIds();
 
     return (
         <div>
@@ -32,11 +32,13 @@ export default function Artists() {
                     </button>
                 </div>
                 <span>
-                    {artists.includes(userId)
-                        ? "id is already an artist!"
-                        : users.includes(userId)
-                          ? "id has an account made in beadle!"
-                          : "id does not have an account in beadle, but you can still add it."}
+                    {Number(userId)
+                        ? artists.includes(userId)
+                            ? "id is already an artist!"
+                            : users.includes(userId)
+                              ? "id has an account made in beadle!"
+                              : "id does not have an account in beadle, but you can still add it."
+                        : "that is not a number"}
                 </span>
             </div>
         </div>

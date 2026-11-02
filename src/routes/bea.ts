@@ -11,6 +11,6 @@ export function routes(app: RouterType) {
 	});
 
 	app.get("/api/artistList", withRequireAccount, async (_request) => {
-		return response(await sql.artist.listIds(env.beadle));
+		return response(await sql.artist.list(env.beadle));
 	});
 }

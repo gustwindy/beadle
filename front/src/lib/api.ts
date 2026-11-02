@@ -40,5 +40,8 @@ export const api = {
 		listIds: async () => {
 			return await get(uri("artistList"));
 		},
+		list: async () => {
+			return await get(uri("admin/artist/list/ids"));
+		},
 	},
 };

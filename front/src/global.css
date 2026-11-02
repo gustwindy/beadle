@@ -38,7 +38,8 @@ button {
 }
 
 input,
-button {
+button,
+select {
     background-color: var(--bg4);
     border: 1px solid var(--border2);
     outline: none;

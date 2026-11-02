@@ -1,4 +1,4 @@
-import { useArtists, useUsers } from "../../lib/dashboardUsuals";
+import { useArtistIds, useUsers } from "../../lib/dashboardUsuals";
 import "./home.css";
 
 function InfoBox({
@@ -18,7 +18,7 @@ function InfoBox({
 
 export default function Home() {
     const users = useUsers();
-    const artists = useArtists();
+    const artists = useArtistIds();
 
     const data = [
         {

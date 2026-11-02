@@ -39,11 +39,39 @@ export function adminRoutes(app: RouterType) {
 	);
 
 	app.get(
+		"/api/admin/artist/list/ids",
+		withRequireAccount,
+		withRequireAdmin,
+		async (_request) => {
+			return response(await sql.artist.list(env.beadle));
+		},
+	);
+
+	app.get(
 		"/api/admin/users/list",
 		withRequireAccount,
 		withRequireAdmin,
 		async (_request) => {
 			return response(await sql.users.listIds(env.beadle));
+		},
+	);
+
+	app.post(
+		"/api/admin/drawings/new",
+		withRequireAccount,
+		withRequireAdmin,
+		async (request) => {
+			const form = await request.formData();
+
+			const image = <File>form.get("image");
+			const artistId = Number(<string>form.get("artistId"));
+			if (!(image && artistId)) {
+				return yourFault("image/artistId not json");
+			}
+
+			await sql.drawings.upload(env.beadle, artistId, image);
+
+			return response("ok");
 		},
 	);
 }

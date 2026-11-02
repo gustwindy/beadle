@@ -53,9 +53,16 @@ export const withJson = async (request: IRequest) => {
 };
 
 const DISCORD_START_DATE = 1420070400000n;
-
 export function discordIdToTimestamp(snowflake: string): number {
 	const num = BigInt(snowflake);
 
 	return Number((num >> 22n) + DISCORD_START_DATE);
+}
+
+export async function hashImage(buffer: ArrayBuffer) {
+	return Array.from(
+		new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
+	)
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("");
 }

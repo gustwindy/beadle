@@ -1,4 +1,6 @@
 import { DEFAULT_SETTINGS, ONE_DAY } from "../constants.ts";
+import { uploadImage } from "./s3.ts";
+import { hashImage } from "./utils.ts";
 
 export const sql = {
 	users: {
@@ -159,7 +161,7 @@ export const sql = {
 		): Promise<DbArtist | undefined> => {
 			const artist: {
 				userId: string;
-				displayNameOverride: string;
+				commonName: string;
 				aliases: string;
 			} | null = await db
 				.prepare("SELECT * FROM artists WHERE userId = ?")
@@ -171,7 +173,7 @@ export const sql = {
 
 			return {
 				userId: artist.userId,
-				name: artist.displayNameOverride,
+				name: artist.commonName,
 				imageUrl: user
 					? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.png?size=512`
 					: "/favicon.png",
@@ -185,6 +187,43 @@ export const sql = {
 					return <string>a.userId;
 				},
 			);
+		},
+
+		list: async (db: D1Database): Promise<DbArtist[]> => {
+			const { results } = await db
+				.prepare(
+					// black magic
+					"SELECT artists.userId, artists.commonName, artists.aliases, users.avatarHash FROM artists LEFT JOIN users ON users.id = artists.userId",
+				)
+				.run();
+
+			return results.map((v) => {
+				const artist = v as {
+					userId: string;
+					commonName: string;
+					aliases: string;
+					avatarHash: string | null;
+				};
+
+				return {
+					userId: artist.userId,
+					name: artist.commonName,
+					imageUrl: artist.avatarHash
+						? `https://cdn.discordapp.com/avatars/${artist.userId}/${artist.avatarHash}.png?size=512`
+						: "/favicon.png",
+					aliases: JSON.parse(artist.aliases),
+				};
+			});
+		},
+	},
+	drawings: {
+		upload: async (db: D1Database, artistId: number, image: File) => {
+			const hash = await uploadImage(image);
+
+			await db
+				.prepare("INSERT INTO drawings (artistId, imageHash) VALUES (?,?)")
+				.bind(artistId, hash)
+				.run();
 		},
 	},
 };
