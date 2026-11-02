@@ -1,6 +1,5 @@
 import { DEFAULT_SETTINGS, ONE_DAY } from "../constants.ts";
 import { uploadImage } from "./s3.ts";
-import { hashImage } from "./utils.ts";
 
 export const sql = {
 	users: {
@@ -217,7 +216,7 @@ export const sql = {
 		},
 	},
 	drawings: {
-		upload: async (db: D1Database, artistId: number, image: File) => {
+		upload: async (db: D1Database, artistId: string, image: File) => {
 			const hash = await uploadImage(image);
 
 			await db
@@ -225,11 +224,53 @@ export const sql = {
 				.bind(artistId, hash)
 				.run();
 		},
+		get: async (
+			db: D1Database,
+			hash: string,
+		): Promise<DbDrawing | undefined> => {
+			const drawings: {
+				artistId: string;
+				imageHash: string;
+			} | null = await db
+				.prepare("SELECT * FROM drawings WHERE imageHash = ?")
+				.bind(hash)
+				.first();
+
+			if (!drawings) return;
+
+			return {
+				artistId: drawings.artistId,
+				imageHash: drawings.imageHash,
+			};
+		},
+		list: async (
+			db: D1Database,
+			artistId: string,
+		): Promise<DbDrawing[] | undefined> => {
+			const drawings:
+				| {
+						artistId: string;
+						imageHash: string;
+				  }[]
+				| null = await db
+				.prepare("SELECT * FROM drawings WHERE artistId = ?")
+				.bind(artistId)
+				.first();
+
+			if (!drawings) return;
+
+			return drawings;
+		},
 	},
 };
 
 export type DbSettings = {
 	useLegacyLogo: boolean;
+};
+
+export type DbDrawing = {
+	imageHash: string;
+	artistId: string;
 };
 
 export type DbArtist = {

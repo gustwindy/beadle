@@ -6,8 +6,8 @@ import Dashboard from "./pages/dashboard";
 
 const root = document.getElementById("root");
 if (root)
-    ReactDom.createRoot(root).render(
-        <React.StrictMode>
-            <Dashboard />
-        </React.StrictMode>,
-    );
+	ReactDom.createRoot(root).render(
+		<React.StrictMode>
+			<Dashboard />
+		</React.StrictMode>,
+	);

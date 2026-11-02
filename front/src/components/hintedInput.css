@@ -1,20 +1,20 @@
 .hintedInput {
-    position: relative;
+	position: relative;
 }
 
 .hintedInput .label {
-    position: absolute;
-    top: -15px;
-    left: 5px;
-    font-size: 13px;
-    opacity: 0.5;
-    transition:
-        top 100ms,
-        font-size 100ms;
-    pointer-events: none;
+	position: absolute;
+	top: -15px;
+	left: 5px;
+	font-size: 13px;
+	opacity: 0.5;
+	transition:
+		top 100ms,
+		font-size 100ms;
+	pointer-events: none;
 }
 
 .hintedInput:not(:has(:valid)) .label {
-    top: 3px;
-    font-size: 16px;
+	top: 3px;
+	font-size: 16px;
 }

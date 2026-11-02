@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { api } from "./api";
 
-type Artist = {
+export type Artist = {
 	userId: string;
 	name: string;
 	imageUrl: string;

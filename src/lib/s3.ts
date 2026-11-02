@@ -31,7 +31,7 @@ export async function uploadImage(image: File) {
 		new PutObjectCommand({
 			Bucket: "nextDrawings",
 			Key: hash,
-			Body: image,
+			Body: new Uint8Array(buffer),
 			ContentType: "image/png",
 		}),
 	);

@@ -1,17 +1,17 @@
 .infoBox {
-    background-color: var(--bg3);
-    border: 1px solid var(--border2);
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+	background-color: var(--bg3);
+	border: 1px solid var(--border2);
+	padding: 15px;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
 }
 
 .label {
-    font-size: 16px;
-    color: #8c87a8;
+	font-size: 16px;
+	color: #8c87a8;
 }
 .value {
-    font-size: 32px;
+	font-size: 32px;
 }

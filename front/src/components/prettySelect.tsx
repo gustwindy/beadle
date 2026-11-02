@@ -1,18 +1,22 @@
 export default function PrettySelect({
-    hint,
-    options,
-    setter,
+	hint,
+	options,
+	setter,
 }: {
-    hint: string;
-    options: string[];
-    setter: React.Dispatch<React.SetStateAction<string>>;
+	hint: string;
+	options: string[];
+	setter: React.Dispatch<React.SetStateAction<string>>;
 }) {
-    return (
-        <select onChange={(a) => {}}>
-            <option disabled>{hint}</option>
-            {options.map((v) => {
-                return <option key={v}>{v}</option>;
-            })}
-        </select>
-    );
+	return (
+		<select
+			onChange={(a) => {
+				setter(a.currentTarget.value);
+			}}
+		>
+			<option>{hint}</option>
+			{options.map((v) => {
+				return <option key={v}>{v}</option>;
+			})}
+		</select>
+	);
 }

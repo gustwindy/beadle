@@ -44,4 +44,22 @@ export const api = {
 			return await get(uri("admin/artist/list/ids"));
 		},
 	},
+	drawings: {
+		new: async (artistId: string, file: File) => {
+			const form = new FormData();
+			form.append("image", file);
+			form.append("artistId", artistId);
+
+			const req = await fetch(uri("admin/drawings/new"), {
+				method: "POST",
+				body: form,
+			});
+			if (!req.ok) alert(await req.text());
+		},
+		list: async (artistId: string) => {
+			return await post(uri("admin/drawings/list"), {
+				artistId: artistId,
+			});
+		},
+	},
 };
