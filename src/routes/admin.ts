@@ -87,7 +87,7 @@ export function adminRoutes(app: RouterType) {
 				request.content.artistId,
 			);
 			if (!drawings) return yourFault("none or error");
-
+			console.log(drawings);
 			return response(drawings);
 		},
 	);
@@ -102,13 +102,13 @@ export function adminRoutes(app: RouterType) {
 			if (!hashes) return;
 
 			return response(
-				Promise.all(
+				await Promise.all(
 					hashes.map(async (hash: string) => {
 						const drawing = await sql.drawings.get(env.beadle, hash);
 
 						if (!drawing) return "invalid drawing";
 
-						return signImage(drawing.imageHash, ONE_DAY * 0.25);
+						return signImage(drawing.imageHash, (ONE_DAY * 0.25) / 1000);
 					}),
 				),
 			);

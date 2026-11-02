@@ -1,60 +1,66 @@
 @font-face {
-	font-family: "Sniglet";
-	src: url("/fonts/Sniglet.ttf");
+    font-family: "Sniglet";
+    src: url("/fonts/Sniglet.ttf");
 }
 
 body {
-	background-color: var(--bg1);
-	display: flex;
-	margin: 0;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
+    background-color: var(--bg1);
+    display: flex;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 ::selection {
-	background-color: #8e74eb44;
+    background-color: #8e74eb44;
 }
 
 :root,
 a,
 button {
-	font-family: "Sniglet", monospace;
-	color: var(--text);
+    font-family: "Sniglet", monospace;
+    color: var(--text);
 
-	--accent: #967bef;
-	--text: #afa8e3;
-	--bg1: #19142d;
-	--bg2: #221d37;
-	--bg3: #130d26;
-	--bg4: #0a041b;
-	--border: #aba7c977;
-	--border2: #2a2540;
+    --accent: #967bef;
+    --text: #afa8e3;
+    --bg1: #19142d;
+    --bg2: #221d37;
+    --bg3: #130d26;
+    --bg4: #0a041b;
+    --border: #aba7c977;
+    --border2: #2a2540;
 }
 
 .horizontal {
-	display: flex;
-	gap: 15px;
+    display: flex;
+    gap: 15px;
 }
 
 input,
 button,
 select {
-	background-color: var(--bg4);
-	border: 1px solid var(--border2);
-	outline: none;
-	color: var(--text);
-	padding: 5px;
-	border-radius: 5px;
+    background-color: var(--bg4);
+    border: 1px solid var(--border2);
+    outline: none;
+    color: var(--text);
+    padding: 5px;
+    border-radius: 5px;
 }
 button {
-	background-color: var(--accent);
-	color: var(--bg4);
-	transition: background-color 100ms;
+    background-color: var(--accent);
+    color: var(--bg4);
+    transition: background-color 100ms;
 }
 button:hover {
-	background-color: var(--text);
+    background-color: var(--text);
 }
 button:active {
-	background-color: var(--border);
+    background-color: var(--border);
+}
+
+.gapped {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
 }

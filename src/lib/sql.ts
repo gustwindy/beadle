@@ -247,15 +247,18 @@ export const sql = {
 			db: D1Database,
 			artistId: string,
 		): Promise<DbDrawing[] | undefined> => {
-			const drawings:
+			const drawings = <
 				| {
 						artistId: string;
 						imageHash: string;
 				  }[]
-				| null = await db
-				.prepare("SELECT * FROM drawings WHERE artistId = ?")
-				.bind(artistId)
-				.first();
+				| null
+			>(
+				await db
+					.prepare("SELECT * FROM drawings WHERE artistId = ?")
+					.bind(artistId)
+					.run()
+			).results;
 
 			if (!drawings) return;
 

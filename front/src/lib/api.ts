@@ -61,5 +61,10 @@ export const api = {
 				artistId: artistId,
 			});
 		},
+		get: async (imageHashes: string[]) => {
+			return await post(uri("admin/drawings/get"), {
+				hashes: imageHashes,
+			});
+		},
 	},
 };
