@@ -31,12 +31,16 @@ export default function Dashboard() {
 		{
 			id: "users",
 			name: "Users",
-			element: <Home />,
+			element: (
+				<span>
+					not implemented its kinda useless anw i js thought it was cool
+				</span>
+			),
 		},
 		{
 			id: "history",
 			name: "Past Beadles",
-			element: <Home />,
+			element: <span>not implemented oops</span>,
 		},
 	];
 
